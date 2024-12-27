@@ -1,4 +1,4 @@
-# Panduan Instalasi Appointment System Rumah Sakit
+# Panduan Instalasi Appointment System Hospital
 
 ## Pendahuluan
 
@@ -8,7 +8,7 @@ Sistem penjadwalan janji atau **Appointment System** adalah mekanisme yang diran
 -   Mengoptimalkan jadwal penyedia layanan.
 -   Meningkatkan kepuasan pengguna layanan kesehatan.
 
-Aplikasi **Appointment System Rumah Sakit** menyediakan fitur lengkap untuk mengatur jadwal janji temu pasien, memilih poli berdasarkan keluhan, memilih dokter berdasarkan jadwal yang tersedia, dan mendapatkan nomor antrean secara otomatis.
+Aplikasi **Appointment System Hospital** menyediakan fitur lengkap untuk mengatur jadwal janji temu pasien, memilih poli berdasarkan keluhan, memilih dokter berdasarkan jadwal yang tersedia, dan mendapatkan nomor antrean secara otomatis.
 
 ---
 
@@ -157,4 +157,4 @@ Secara default, aplikasi dapat diakses di [http://127.0.0.1:8000](http://127.0.0
 
 ## Anda Sudah Siap!
 
-Aplikasi **Appointment System Rumah Sakit** kini siap digunakan. Jika Anda mengalami kendala, silakan hubungi tim pengembang atau merujuk pada dokumentasi.
+Aplikasi **Appointment System Hospital** kini siap digunakan. Jika Anda mengalami kendala, silakan hubungi tim pengembang atau merujuk pada dokumentasi.
