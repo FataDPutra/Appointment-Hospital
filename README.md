@@ -1,33 +1,41 @@
-# Appointment Hospital - Installation Guide
+# Panduan Instalasi Appointment System Rumah Sakit
 
-Follow the steps below to set up and run the Appointment Hospital application locally.
+## Pendahuluan
+
+Sistem penjadwalan janji atau **Appointment System** adalah mekanisme yang dirancang untuk mengelola pengalokasian sumber daya secara efisien, seperti tenaga kerja atau waktu layanan, dalam berbagai konteks, terutama dalam layanan kesehatan. Sistem ini bertujuan untuk:
+
+-   Meminimalkan waktu tunggu pasien.
+-   Mengoptimalkan jadwal penyedia layanan.
+-   Meningkatkan kepuasan pengguna layanan kesehatan.
+
+Aplikasi **Appointment System Rumah Sakit** menyediakan fitur lengkap untuk mengatur jadwal janji temu pasien, memilih poli berdasarkan keluhan, memilih dokter berdasarkan jadwal yang tersedia, dan mendapatkan nomor antrean secara otomatis.
 
 ---
 
-## Prerequisites
+## Prasyarat
 
-Make sure you have the following installed on your system:
+Pastikan perangkat Anda telah terpasang aplikasi berikut:
 
 1. **PHP** (>= 8.2)
-2. **Composer** (latest version)
-3. **Node.js** (>= 20.x) and **npm** or **yarn**
-4. **PostgreSQL** or any supported database
+2. **Composer** (versi terbaru)
+3. **Node.js** (>= 20.x) dan **npm** atau **yarn**
+4. **PostgreSQL** atau basis data lain yang didukung
 5. **Git**
 6. **Laravel CLI**
 
 ---
 
-## Installation Steps
+## Langkah Instalasi
 
-### 1. Clone the Repository
+### 1. Kloning Repository
 
-Clone the repository from your version control platform (e.g., GitHub):
+Kloning repository dari platform kontrol versi (contoh: GitHub):
 
 ```bash
 git clone https://github.com/FataDPutra/Appointment-Hospital.git
 ```
 
-Navigate into the project directory:
+Masuk ke direktori proyek:
 
 ```bash
 cd sistem_jadwal_rumahsakit
@@ -35,43 +43,44 @@ cd sistem_jadwal_rumahsakit
 
 ---
 
-### 2. Set Up Environment Variables
+### 2. Atur Variabel Lingkungan
 
-Copy the `.env.example` file to create your `.env` file:
+Salin file `.env.example` untuk membuat file `.env` baru:
 
 ```bash
 cp .env.example .env
 ```
 
-Edit the `.env` file to match your local setup. Update the following fields:
+Edit file `.env` sesuai konfigurasi lokal Anda. Perbarui bagian berikut:
 
--   **Database configuration:**
-    ```env
-    DB_CONNECTION=pgsql
-    DB_HOST=127.0.0.1
-    DB_PORT=5432
-    DB_DATABASE=rumahsakit
-    DB_USERNAME=root
-    DB_PASSWORD=your_password
-    ```
+-   **Konfigurasi Database:**
+
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=rumahsakit
+DB_USERNAME=root
+DB_PASSWORD=your_password
+```
 
 ---
 
-### 3. Install Dependencies
+### 3. Instalasi Dependensi
 
-Install PHP dependencies:
+Instal dependensi PHP:
 
 ```bash
 composer install
 ```
 
-Install JavaScript dependencies:
+Instal dependensi JavaScript:
 
 ```bash
 npm install
 ```
 
-Or, if you prefer yarn:
+Atau, jika Anda menggunakan yarn:
 
 ```bash
 yarn install
@@ -81,7 +90,7 @@ yarn install
 
 ### 4. Generate Application Key
 
-Generate the application key for the Laravel application:
+Generate kunci aplikasi untuk Laravel:
 
 ```bash
 php artisan key:generate
@@ -89,41 +98,44 @@ php artisan key:generate
 
 ---
 
-### 5. Run Database Migrations and Seeders
+### 5. Migrasi dan Seeder Database
 
-Run the migrations to set up your database tables:
+Jalankan migrasi untuk membuat tabel di database:
 
 ```bash
 php artisan migrate
 ```
 
-Seed the database with initial data:
+Isi database dengan data awal:
 
 ```bash
 php artisan db:seed --class=UserSeeder
 ```
 
+Setelah menjalankan seeder, akun berikut akan tersedia:
+
+-   **Admin:**
+
+    -   Email: admin@email.com
+    -   Password: password
+
+-   **Dokter:**
+    -   Email: dokter@email.com
+    -   Password: password
+
 ---
 
-After running the seeders, an admin account will be created with the following credentials:
+### 6. Kompilasi Aset Frontend
 
-Email: admin@email.com
-Password: password
-This account can be used to log in to the application as an administrator.
+Kompilasi aset frontend dengan salah satu perintah berikut:
 
-Email: dokter@email.com
-Password: password
-This account can be used to log in to the application as an dokter.
-
-### 6. Compile Frontend Assets
-
-Compile the frontend assets using one of the following commands:
+Untuk pengembangan:
 
 ```bash
 npm run dev
 ```
 
-Or for production:
+Untuk produksi:
 
 ```bash
 npm run build
@@ -131,16 +143,18 @@ npm run build
 
 ---
 
-### 7. Serve the Application
+### 7. Jalankan Aplikasi
 
-Run the application using the built-in Laravel development server:
+Jalankan aplikasi menggunakan server pengembangan Laravel:
 
 ```bash
 php artisan serve
 ```
 
-By default, the application will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000).
+Secara default, aplikasi dapat diakses di [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
-### You're all set!
+---
 
-Your Appointment Hospital application should now be up and running. If you encounter any issues, feel free to contact the development team or refer to the documentation.
+## Anda Sudah Siap!
+
+Aplikasi **Appointment System Rumah Sakit** kini siap digunakan. Jika Anda mengalami kendala, silakan hubungi tim pengembang atau merujuk pada dokumentasi.
