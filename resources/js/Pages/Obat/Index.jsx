@@ -1,56 +1,165 @@
 import React from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { InertiaLink } from "@inertiajs/inertia-react";
+import Swal from "sweetalert2";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import Sidebar from "../../Components/Sidebar";
+import { GiMedicines } from "react-icons/gi";
 
-const Index = ({ obats }) => {
+const ObatIndex = ({ obats }) => {
     const handleDelete = (id) => {
-        if (confirm("Apakah Anda yakin ingin menghapus obat ini?")) {
-            Inertia.delete(`/obats/${id}`);
-        }
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Obat ini akan dihapus!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Hapus",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Inertia.delete(route("obats.destroy", id));
+                Swal.fire("Terhapus!", "Data obat telah dihapus.", "success");
+            }
+        });
+    };
+
+    // Helper function to format the price as Rp.
+    const formatHarga = (harga) => {
+        if (!harga) return "-";
+        const numericHarga = parseInt(harga, 10); // Convert to number
+        return `Rp. ${numericHarga.toLocaleString("id-ID")}`; // Format with thousands separator
     };
 
     return (
-        <div>
-            <h1>Daftar Obat</h1>
-            <InertiaLink href="/obats/create" className="btn btn-primary">
-                Tambah Obat
-            </InertiaLink>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nama Obat</th>
-                        <th>Kemasan</th>
-                        <th>Harga</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {obats.map((obat) => (
-                        <tr key={obat.id}>
-                            <td>{obat.nama_obat}</td>
-                            <td>{obat.kemasan}</td>
-                            <td>{obat.harga}</td>
-                            <td>
+        <AuthenticatedLayout
+            header={
+                <h2 className="text-2xl font-semibold leading-tight text-gray-800">
+                    Daftar Obat
+                </h2>
+            }
+        >
+            <div className="flex">
+                <Sidebar />
+                <div className="container mx-auto p-6 ml-0 bg-[#FBF8EF] rounded-lg shadow-lg w-full">
+                    <div className="flex justify-between items-center mb-6">
+                        <InertiaLink
+                            href={route("obats.create")}
+                            className="bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out"
+                        >
+                            <GiMedicines className="w-5 h-5" />
+                            <span>Tambah Obat</span>
+                        </InertiaLink>
+                    </div>
+
+                    {/* If there are no obats */}
+                    {obats.data.length === 0 ? (
+                        <div className="text-center text-gray-500 py-4">
+                            Tidak ada data obat.
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto bg-white rounded-lg shadow-md">
+                            <table className="w-full table-auto border-collapse">
+                                <thead className="bg-[#78B3CE] text-white text-sm">
+                                    <tr>
+                                        <th className="border p-3 text-left">
+                                            Nama Obat
+                                        </th>
+                                        <th className="border p-3 text-left">
+                                            Kemasan
+                                        </th>
+                                        <th className="border p-3 text-left">
+                                            Harga
+                                        </th>
+                                        <th className="border p-3 text-left">
+                                            Aksi
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="text-sm">
+                                    {obats.data.map((obat) => (
+                                        <tr
+                                            key={obat.id}
+                                            className="hover:bg-[#F3F3F3] transition-all duration-200"
+                                        >
+                                            <td className="border p-4">
+                                                {obat.nama_obat}
+                                            </td>
+                                            <td className="border p-4">
+                                                {obat.kemasan || "-"}
+                                            </td>
+                                            <td className="border p-4">
+                                                {formatHarga(obat.harga)}
+                                            </td>
+                                            <td className="border p-4">
+                                                <div className="flex space-x-3 justify-center">
+                                                    {/* Edit Button */}
+                                                    <InertiaLink
+                                                        href={route(
+                                                            "obats.edit",
+                                                            obat.id
+                                                        )}
+                                                        className="bg-yellow-500 text-white px-4 py-2 rounded-md shadow-md flex items-center space-x-2 transition-all duration-200 hover:bg-yellow-600"
+                                                    >
+                                                        <FaEdit className="w-4 h-4" />
+                                                        <span className="text-sm">
+                                                            Edit
+                                                        </span>
+                                                    </InertiaLink>
+
+                                                    {/* Delete Button */}
+                                                    <button
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                obat.id
+                                                            )
+                                                        }
+                                                        className="bg-red-500 text-white px-4 py-2 rounded-md shadow-md flex items-center space-x-2 transition-all duration-200 hover:bg-red-600"
+                                                    >
+                                                        <FaTrashAlt className="w-4 h-4" />
+                                                        <span className="text-sm">
+                                                            Hapus
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+
+                    {/* Pagination controls */}
+                    <div className="my-4 mx-4">
+                        <div className="flex justify-between">
+                            {/* Previous Page */}
+                            {obats.prev_page_url && (
                                 <InertiaLink
-                                    href={`/obats/${obat.id}/edit`}
-                                    className="btn btn-warning"
+                                    href={obats.prev_page_url}
+                                    className="px-4 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-all duration-200"
                                 >
-                                    Edit
+                                    Previous
                                 </InertiaLink>
-                                <button
-                                    onClick={() => handleDelete(obat.id)}
-                                    className="btn btn-danger"
-                                    style={{ marginLeft: "5px" }}
+                            )}
+                            {/* Next Page */}
+                            {obats.next_page_url && (
+                                <InertiaLink
+                                    href={obats.next_page_url}
+                                    className="px-4 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-all duration-200"
                                 >
-                                    Hapus
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+                                    Next
+                                </InertiaLink>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </AuthenticatedLayout>
     );
 };
 
-export default Index;
+export default ObatIndex;

@@ -1,57 +1,115 @@
-import { Link } from "@inertiajs/react";
-import { HiUser, HiOfficeBuilding, HiUserGroup } from "react-icons/hi";
-import { FaPlus } from "react-icons/fa"; // FaPlus for the pill icon
+import React from "react";
+import { Link, usePage } from "@inertiajs/react";
+import { CiHospital1 } from "react-icons/ci";
+import { GiPill } from "react-icons/gi";
+import { IoIosHome } from "react-icons/io";
+import { GiPlagueDoctorProfile } from "react-icons/gi";
+import { FaPeopleGroup, FaUserDoctor } from "react-icons/fa6";
+import { PiClockUserBold } from "react-icons/pi";
+import { TbCheckupList } from "react-icons/tb";
+import { FaBookMedical } from "react-icons/fa";
 
 export default function Sidebar() {
+    const { url, props } = usePage(); // Mendapatkan URL saat ini dan props untuk akses user data
+
+    const userRole = props.auth.user.role; // Mendapatkan role pengguna (admin atau dokter)
+
+    // Fungsi untuk memeriksa apakah URL saat ini cocok dengan path
+    const isActive = (path) => url.includes(path);
+
+    // Menu untuk Admin
+    const adminMenuItems = [
+        {
+            label: "Home",
+            route: "/admin/dashboard",
+            icon: <IoIosHome className="w-6 h-6" />,
+        },
+        {
+            label: "Data Pasien",
+            route: "/pasiens",
+            icon: <FaPeopleGroup className="w-6 h-6" />,
+        },
+        {
+            label: "Data Dokter",
+            route: "/dokter",
+            icon: <FaUserDoctor className="w-6 h-6" />,
+        },
+        {
+            label: "Data Poli",
+            route: "/polis",
+            icon: <CiHospital1 className="w-6 h-6" />,
+        },
+        {
+            label: "Data Obat",
+            route: "/obats",
+            icon: <GiPill className="w-6 h-6" />,
+        },
+    ];
+
+    // Menu untuk Dokter
+    const dokterMenuItems = [
+        {
+            label: "Home",
+            route: "/dashboard",
+            icon: <IoIosHome className="w-6 h-6" />,
+        },
+        {
+            label: "Jadwal Periksa",
+            route: "/jadwal",
+            icon: <PiClockUserBold className="w-6 h-6" />,
+        },
+        {
+            label: "Periksa Pasien",
+            route: "/periksa",
+            icon: <TbCheckupList className="w-6 h-6" />,
+        },
+        {
+            label: "Riwayat Pasien",
+            route: "/riwayat-pasien",
+            icon: <FaBookMedical className="w-6 h-6" />,
+        },
+    ];
+
+    // Menentukan menu berdasarkan role
+    const menuItems = userRole === "admin" ? adminMenuItems : dokterMenuItems;
+
     return (
-        <div className="w-64 h-screen bg-gray-800 text-white">
-            <div className="flex justify-center items-center p-6">
-                <h1 className="text-2xl font-semibold text-white">
-                    Admin Panel
+        <div className="w-64 h-screen bg-gradient-to-b from-[#78B3CE] to-[#C9E6F0] text-white shadow-lg relative">
+            {/* Header Section */}
+            <div className="flex flex-col items-center py-6 border-b border-[#C9E6F0]">
+                <div className="w-16 h-16 bg-[#F96E2A] rounded-full flex items-center justify-center shadow-md mb-3">
+                    <GiPlagueDoctorProfile className="w-10 h-10 text-white" />
+                </div>
+                <h1 className="text-xl font-bold">
+                    {userRole === "admin" ? "Admin Panel" : "Dokter Panel"}
                 </h1>
             </div>
 
-            <nav>
-                <ul className="space-y-4 px-6 py-4">
-                    <li>
-                        <Link
-                            href={route("pasiens.index")}
-                            className="flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-700 rounded-md p-2"
-                        >
-                            <HiUser className="w-6 h-6" />
-                            <span>Data Pasien</span>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link
-                            href={route("dokter.index")}
-                            className="flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-700 rounded-md p-2"
-                        >
-                            <HiUserGroup className="w-6 h-6" />
-                            <span>Data Dokter</span>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link
-                            href={route("polis.index")}
-                            className="flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-700 rounded-md p-2"
-                        >
-                            <HiOfficeBuilding className="w-6 h-6" />
-                            <span>Data Poli</span>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link
-                            href={route("obats.index")}
-                            className="flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-700 rounded-md p-2"
-                        >
-                            <FaPlus className="w-6 h-6" />{" "}
-                            {/* Use FaPill from Font Awesome */}
-                            <span>Data Obat</span>
-                        </Link>
-                    </li>
+            {/* Navigation Menu */}
+            <nav className="mt-6">
+                <ul className="space-y-4 px-4">
+                    {menuItems.map((item, index) => (
+                        <li key={index}>
+                            <Link
+                                href={item.route} // Menggunakan route statis
+                                className={`flex items-center py-3 px-4 ${
+                                    isActive(item.route) // Cek apakah URL saat ini sama dengan route
+                                        ? "bg-[#FBF8EF] text-[#475860] font-semibold" // Jika aktif
+                                        : "bg-[#78B3CE] text-white hover:bg-[#FBF8EF] hover:text-[#78B3CE]" // Jika tidak aktif, warna latar belakang oranye
+                                } rounded-md transition-all shadow-sm`}
+                            >
+                                {item.icon} {/* Menampilkan ikon */}
+                                <span className="ml-2">{item.label}</span>
+                            </Link>
+                        </li>
+                    ))}
                 </ul>
             </nav>
+
+            {/* Footer */}
+            <div className="absolute bottom-6 left-0 w-full text-center">
+                <p className="text-sm text-black">Fata Dwi Putra &copy; 2024</p>
+            </div>
         </div>
     );
 }

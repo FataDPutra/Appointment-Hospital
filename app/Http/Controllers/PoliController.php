@@ -11,7 +11,7 @@ class PoliController extends Controller
     // Menampilkan daftar poli
     public function index()
     {
-        $polis = Poli::all();
+    $polis = Poli::orderBy('created_at', 'desc')->paginate(8);
         return Inertia::render('Poli/Index', [
             'polis' => $polis
         ]);

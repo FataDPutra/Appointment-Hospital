@@ -4,19 +4,20 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\PoliController;
 use App\Http\Controllers\ObatController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\AuthPasienController;
-use App\Http\Middleware\CheckPasienLogin;
 use App\Http\Controllers\DataDokterController;
 use App\Http\Controllers\JadwalPeriksaController;
 use App\Http\Controllers\DaftarPoliController;
 use App\Http\Controllers\PeriksaController;
 use App\Http\Controllers\RiwayatPasienController;
+use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\CheckPasienLogin;
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -49,7 +50,7 @@ Route::middleware(['auth', CheckRole::class.':admin'])->group(function () {
 
 // Route untuk Dokter
 Route::middleware(['auth', CheckRole::class.':dokter'])->group(function () {
-    Route::get('/dokter/dashboard', [DokterController::class, 'index'])->name('dokter.dashboard');
+    Route::get('/dashboard', [DokterController::class, 'index'])->name('dokter.dashboard');
 
     // Menampilkan daftar jadwal periksa
     Route::get('/jadwal', [JadwalPeriksaController::class, 'index'])->name('jadwal.index');

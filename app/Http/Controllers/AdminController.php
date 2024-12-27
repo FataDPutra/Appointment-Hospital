@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Poli;
 use App\Models\Obat;
+use App\Models\Dokter;
 use App\Models\Pasien;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,7 @@ class AdminController extends Controller
     {
         // Fetch counts of Poli, Obat, and Pasien
         $totalPoli = Poli::count();
+        $totalDokter = Dokter::count();
         $totalObat = Obat::count();
         $totalPasien = Pasien::count();
 
@@ -20,6 +22,7 @@ class AdminController extends Controller
         return inertia('Admin/Dashboard', [
             'totalPoli' => $totalPoli,
             'totalObat' => $totalObat,
+            'totalDokter' => $totalDokter,
             'totalPasien' => $totalPasien,
         ]);
     }

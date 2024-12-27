@@ -23,8 +23,11 @@ public function index()
     })
     ->with(['pasien', 'jadwal']) // Memuat relasi pasien dan jadwal
     ->withTrashed() // Termasuk yang soft deleted
-    ->get()
-    ->map(function ($item) {
+    ->orderByRaw("CASE WHEN deleted_at IS NULL THEN 0 ELSE 1 END, created_at ASC") // Urutkan berdasarkan status dan waktu
+    ->paginate(8); // Menambahkan pagination dengan 8 item per halaman
+
+    // Menggunakan map untuk menentukan status
+    $daftarPoli->getCollection()->map(function ($item) {
         // Tentukan status apakah sudah diperiksa atau belum
         $item->status = $item->deleted_at ? 'Sudah Diperiksa' : 'Belum Diperiksa';
         return $item;
@@ -34,6 +37,7 @@ public function index()
         'daftarPoli' => $daftarPoli,
     ]);
 }
+
 
 
     public function show(DaftarPoli $daftarPoli)
@@ -92,51 +96,50 @@ public function index()
     }
 
     public function edit(Periksa $periksa)
-{
-    // Ambil data pemeriksaan beserta detail obat yang dipilih
-    $detailPeriksa = $periksa->detailPeriksa;
-    $obat = Obat::all();  // Ambil semua obat untuk dipilih
+    {
+        // Ambil data pemeriksaan beserta detail obat yang dipilih
+        $detailPeriksa = $periksa->detailPeriksa;
+        $obat = Obat::all();  // Ambil semua obat untuk dipilih
 
-    return Inertia::render('Periksa/Edit', [
-        'periksa' => $periksa,
-        'obat' => $obat,
-        'detailPeriksa' => $detailPeriksa,
-    ]);
-}
-
-public function update(Request $request, Periksa $periksa)
-{
-    // Validasi input
-    $request->validate([
-        'catatan' => 'nullable|string',
-        'obat' => 'required|array',
-        'obat.*' => 'exists:obat,id',
-    ]);
-
-    // Hitung total biaya obat yang dipilih
-    $totalBiayaObat = Obat::whereIn('id', $request->obat)->sum('harga');
-    $biayaPeriksa = 150000 + $totalBiayaObat;
-
-    // Update data pemeriksaan
-    $periksa->update([
-        'catatan' => $request->catatan,
-        'biaya_periksa' => $biayaPeriksa,
-    ]);
-
-    // Hapus detail pemeriksaan obat sebelumnya
-    $periksa->detailPeriksa()->delete();
-
-    // Simpan detail pemeriksaan untuk obat yang dipilih
-    foreach ($request->obat as $idObat) {
-        DetailPeriksa::create([
-            'id_periksa' => $periksa->id,
-            'id_obat' => $idObat,
+        return Inertia::render('Periksa/Edit', [
+            'periksa' => $periksa,
+            'obat' => $obat,
+            'detailPeriksa' => $detailPeriksa,
         ]);
+    
     }
 
-    // Redirect ke halaman daftar periksa dengan pesan sukses
-    return redirect()->route('periksa.index')->with('success', 'Pemeriksaan berhasil diupdate.');
-}
+    public function update(Request $request, Periksa $periksa)
+    {
+        // Validasi input
+        $request->validate([
+            'catatan' => 'nullable|string',
+            'obat' => 'required|array',
+            'obat.*' => 'exists:obat,id',
+        ]);
 
-    
+        // Hitung total biaya obat yang dipilih
+        $totalBiayaObat = Obat::whereIn('id', $request->obat)->sum('harga');
+        $biayaPeriksa = 150000 + $totalBiayaObat;
+
+        // Update data pemeriksaan
+        $periksa->update([
+            'catatan' => $request->catatan,
+            'biaya_periksa' => $biayaPeriksa,
+        ]);
+
+        // Hapus detail pemeriksaan obat sebelumnya
+        $periksa->detailPeriksa()->delete();
+
+        // Simpan detail pemeriksaan untuk obat yang dipilih
+        foreach ($request->obat as $idObat) {
+            DetailPeriksa::create([
+                'id_periksa' => $periksa->id,
+                'id_obat' => $idObat,
+            ]);
+        }
+
+        // Redirect ke halaman daftar periksa dengan pesan sukses
+        return redirect()->route('periksa.index')->with('success', 'Pemeriksaan berhasil diupdate.');
+    }
 }

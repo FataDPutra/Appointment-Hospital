@@ -11,7 +11,7 @@ class ObatController extends Controller
     // Menampilkan daftar obat
     public function index()
     {
-        $obats = Obat::all();
+    $obats = Obat::orderBy('updated_at', 'desc')->paginate(8);
         return Inertia::render('Obat/Index', [
             'obats' => $obats,
         ]);

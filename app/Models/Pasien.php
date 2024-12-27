@@ -18,5 +18,11 @@ class Pasien extends Model
         'no_hp',
         'no_rm',
     ];
+
+    public function daftarPoli()
+{
+    return $this->hasMany(DaftarPoli::class, 'id_pasien'); // Pastikan nama kolom sesuai
+}
+
     
 }

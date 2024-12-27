@@ -1,114 +1,141 @@
 import React from "react";
 import { InertiaLink } from "@inertiajs/inertia-react";
+import AuthenticatedLayoutPasien from "@/Layouts/AuthenticatedLayoutPasien";
+import PasienSidebar from "../../Components/PasienSidebar";
+import { FaNotesMedical } from "react-icons/fa";
 
 const Index = ({ daftarPoli }) => {
+    // Function to format the date
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString(); // Formats as 'MM/DD/YYYY'
+    };
+
     return (
-        <div className="container mx-auto p-6">
-            <h1 className="text-3xl font-semibold mb-6">
-                Daftar Pendaftaran Poli
-            </h1>
-
-            {/* Button untuk menambah pendaftaran */}
-            <InertiaLink
-                href={route("daftar-poli.create")}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700 mb-4 inline-block"
-            >
-                Tambah Pendaftaran
-            </InertiaLink>
-
-            {/* Tabel Daftar Pendaftaran Poli */}
-            <div className="overflow-x-auto bg-white rounded-lg shadow-md">
-                <table className="min-w-full table-auto">
-                    <thead className="bg-gray-100">
-                        <tr>
-                            <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
-                                No
-                            </th>
-                            <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
-                                Dokter
-                            </th>
-                            <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
-                                Poli
-                            </th>
-                            <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
-                                Hari
-                            </th>
-                            <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
-                                Jam
-                            </th>
-                            <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
-                                Nomor Antrian
-                            </th>
-                            <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
-                                Status
-                            </th>
-                            <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
-                                Riwayat
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {daftarPoli.length > 0 ? (
-                            daftarPoli.map((item, index) => (
-                                <tr key={item.id} className="border-t">
-                                    <td className="py-3 px-4 text-sm text-gray-800">
-                                        {index + 1}
-                                    </td>
-                                    <td className="py-3 px-4 text-sm text-gray-800">
-                                        {item.jadwal?.dokter?.nama || "N/A"}
-                                    </td>
-                                    <td className="py-3 px-4 text-sm text-gray-800">
-                                        {item.jadwal?.dokter?.poli?.nama_poli ||
-                                            "N/A"}
-                                    </td>
-                                    <td className="py-3 px-4 text-sm text-gray-800">
-                                        {item.jadwal?.hari || "N/A"}
-                                    </td>
-                                    <td className="py-3 px-4 text-sm text-gray-800">
-                                        {item.jadwal?.jam_mulai} -{" "}
-                                        {item.jadwal?.jam_selesai}
-                                    </td>
-                                    <td className="py-3 px-4 text-sm text-gray-800">
-                                        {item.no_antrian}
-                                    </td>
-                                    <td className="py-3 px-4 text-sm text-gray-800">
-                                        {item.deleted_at ? (
-                                            <span className="text-green-600">
-                                                Sudah Diperiksa
-                                            </span>
-                                        ) : (
-                                            <span className="text-yellow-600">
-                                                Pending
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td className="py-3 px-4 text-sm text-gray-800">
-                                        <InertiaLink
-                                            href={route(
-                                                "daftar-poli.riwayat",
-                                                item.id
-                                            )}
-                                            className="text-blue-600 hover:text-blue-800"
-                                        >
+        <AuthenticatedLayoutPasien
+            header={
+                <h2 className="text-2xl font-semibold leading-tight text-gray-800">
+                    Pendaftaran Poli
+                </h2>
+            }
+        >
+            <div className="flex">
+                <PasienSidebar />
+                <div className="container mx-auto p-6 ml-0 bg-[#FBF8EF] rounded-lg shadow-lg w-full">
+                    <div className="flex justify-between items-center mb-6">
+                        <InertiaLink
+                            href={route("daftar-poli.create")}
+                            className="bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out"
+                        >
+                            <FaNotesMedical className="w-5 h-5" />
+                            <span>Tambah Pendaftaran</span>
+                        </InertiaLink>
+                    </div>
+                    <div className="text-center text-gray-500 py-4">
+                        Riwayat Pendaftaran
+                    </div>
+                    {/* Jika tidak ada data */}
+                    {daftarPoli.length === 0 ? (
+                        <div className="text-center text-gray-500 py-4">
+                            Tidak ada data riwayat pendaftaran.
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto bg-white rounded-lg shadow-md">
+                            <table className="w-full table-auto border-collapse">
+                                <thead className="bg-[#78B3CE] text-white text-sm">
+                                    <tr>
+                                        <th className="border p-2 text-center">
+                                            No
+                                        </th>
+                                        <th className="border p-2 text-center">
+                                            Tanggal Periksa
+                                        </th>
+                                        <th className="border p-2 text-center">
+                                            Dokter
+                                        </th>
+                                        <th className="border p-2 text-center">
+                                            Poli
+                                        </th>
+                                        <th className="border p-2 text-center">
+                                            Hari
+                                        </th>
+                                        <th className="border p-2 text-center">
+                                            Jam
+                                        </th>
+                                        <th className="border p-2 text-center">
+                                            Nomor Antrian
+                                        </th>
+                                        <th className="border p-2 text-center">
+                                            Status
+                                        </th>
+                                        <th className="border p-2 text-center">
                                             Riwayat
-                                        </InertiaLink>
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td
-                                    colSpan="8"
-                                    className="py-3 px-4 text-center text-gray-500"
-                                >
-                                    Tidak ada data pendaftaran.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="text-sm">
+                                    {daftarPoli.map((item, index) => (
+                                        <tr
+                                            key={item.id}
+                                            className="hover:bg-[#F3F3F3] transition-all duration-200"
+                                        >
+                                            <td className="border p-4 text-center">
+                                                {index + 1}
+                                            </td>
+                                            <td className="border p-4 text-center">
+                                                {formatDate(
+                                                    item.periksa?.tgl_periksa
+                                                )}
+                                            </td>
+                                            <td className="border p-4">
+                                                {item.jadwal?.dokter?.nama ||
+                                                    "N/A"}
+                                            </td>
+                                            <td className="border p-4">
+                                                {item.jadwal?.dokter?.poli
+                                                    ?.nama_poli || "N/A"}
+                                            </td>
+                                            <td className="border p-4 text-center">
+                                                {item.jadwal?.hari || "N/A"}
+                                            </td>
+                                            <td className="border p-4 text-center">
+                                                {item.jadwal?.jam_mulai} -{" "}
+                                                {item.jadwal?.jam_selesai}
+                                            </td>
+                                            <td className="border p-4 text-center">
+                                                {item.no_antrian}
+                                            </td>
+                                            <td className="border p-4 text-center">
+                                                {item.deleted_at ? (
+                                                    <span className="text-green-600">
+                                                        Sudah Diperiksa
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-yellow-600">
+                                                        Pending
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td className="border p-4 text-center">
+                                                <InertiaLink
+                                                    href={route(
+                                                        "daftar-poli.riwayat",
+                                                        item.id
+                                                    )}
+                                                    className="text-blue-600 hover:text-blue-800"
+                                                >
+                                                    Riwayat
+                                                </InertiaLink>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
+        </AuthenticatedLayoutPasien>
     );
 };
 

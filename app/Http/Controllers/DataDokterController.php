@@ -10,12 +10,11 @@ use Inertia\Inertia;
 
 class DataDokterController extends Controller
 {
-    public function index()
-    {
-        $dokters = Dokter::with('poli')->get();
-        return Inertia::render('Dokter/Index', ['dokters' => $dokters]);
-    }
-
+public function index()
+{
+    $dokters = Dokter::with('poli')->orderBy('created_at', 'desc')->paginate(10);
+    return Inertia::render('Dokter/Index', ['dokters' => $dokters]);
+}
     public function create()
     {
         $poli = Poli::all();
@@ -27,7 +26,7 @@ class DataDokterController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'alamat' => 'nullable|string',
-            'no_hp' => 'required|string',
+            'no_hp' => 'required|string|max:15',
             'id_poli' => 'required|exists:poli,id',
             'email' => 'required|email|unique:dokter,email',
             'password' => 'required|min:8',
