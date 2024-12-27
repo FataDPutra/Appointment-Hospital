@@ -2,6 +2,8 @@
 
 ## Pendahuluan
 
+![Appointment System](https://via.placeholder.com/800x400?text=Appointment+System+Rumah+Sakit)
+
 Sistem penjadwalan janji atau **Appointment System** adalah mekanisme yang dirancang untuk mengelola pengalokasian sumber daya secara efisien, seperti tenaga kerja atau waktu layanan, dalam berbagai konteks, terutama dalam layanan kesehatan. Sistem ini bertujuan untuk:
 
 -   Meminimalkan waktu tunggu pasien.
@@ -13,6 +15,8 @@ Aplikasi **Appointment System Rumah Sakit** menyediakan fitur lengkap untuk meng
 ---
 
 ## Prasyarat
+
+![Requirements](https://via.placeholder.com/800x300?text=Prasyarat+Sistem)
 
 Pastikan perangkat Anda telah terpasang aplikasi berikut:
 
@@ -29,6 +33,8 @@ Pastikan perangkat Anda telah terpasang aplikasi berikut:
 
 ### 1. Kloning Repository
 
+![Clone Repository](https://via.placeholder.com/800x400?text=Kloning+Repository)
+
 Kloning repository dari platform kontrol versi (contoh: GitHub):
 
 ```bash
@@ -44,6 +50,8 @@ cd sistem_jadwal_rumahsakit
 ---
 
 ### 2. Atur Variabel Lingkungan
+
+![Environment Variables](https://via.placeholder.com/800x400?text=Variabel+Lingkungan)
 
 Salin file `.env.example` untuk membuat file `.env` baru:
 
@@ -68,6 +76,8 @@ DB_PASSWORD=your_password
 
 ### 3. Instalasi Dependensi
 
+![Install Dependencies](https://via.placeholder.com/800x400?text=Instal+Dependensi)
+
 Instal dependensi PHP:
 
 ```bash
@@ -90,6 +100,8 @@ yarn install
 
 ### 4. Generate Application Key
 
+![Application Key](https://via.placeholder.com/800x300?text=Generate+Application+Key)
+
 Generate kunci aplikasi untuk Laravel:
 
 ```bash
@@ -99,6 +111,8 @@ php artisan key:generate
 ---
 
 ### 5. Migrasi dan Seeder Database
+
+![Database Migration](https://via.placeholder.com/800x400?text=Migrasi+dan+Seeder+Database)
 
 Jalankan migrasi untuk membuat tabel di database:
 
@@ -127,6 +141,8 @@ Setelah menjalankan seeder, akun berikut akan tersedia:
 
 ### 6. Kompilasi Aset Frontend
 
+![Frontend Compilation](https://via.placeholder.com/800x400?text=Kompilasi+Aset+Frontend)
+
 Kompilasi aset frontend dengan salah satu perintah berikut:
 
 Untuk pengembangan:
@@ -145,6 +161,8 @@ npm run build
 
 ### 7. Jalankan Aplikasi
 
+![Run Application](https://via.placeholder.com/800x400?text=Jalankan+Aplikasi)
+
 Jalankan aplikasi menggunakan server pengembangan Laravel:
 
 ```bash
@@ -156,5 +174,7 @@ Secara default, aplikasi dapat diakses di [http://127.0.0.1:8000](http://127.0.0
 ---
 
 ## Anda Sudah Siap!
+
+![Ready](https://via.placeholder.com/800x400?text=Aplikasi+Siap+Digunakan)
 
 Aplikasi **Appointment System Rumah Sakit** kini siap digunakan. Jika Anda mengalami kendala, silakan hubungi tim pengembang atau merujuk pada dokumentasi.
