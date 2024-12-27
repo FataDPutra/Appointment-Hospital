@@ -38,7 +38,7 @@ git clone https://github.com/FataDPutra/Appointment-Hospital.git
 Masuk ke direktori proyek:
 
 ```bash
-cd sistem_jadwal_rumahsakit
+cd Appointment-Hospitak
 ```
 
 ---
