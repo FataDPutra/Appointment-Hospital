@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "@inertiajs/react";
 import { HiIdentification } from "react-icons/hi";
+import { Head } from "@inertiajs/react";
 import { IoIosArrowBack } from "react-icons/io";
 
 export default function Login() {
@@ -15,6 +16,8 @@ export default function Login() {
 
     return (
         <div className="min-h-screen bg-[#78B3CE] flex items-center justify-center relative">
+            <Head title="Login" />
+
             {/* Tombol Back */}
             <button
                 onClick={() => (window.location.href = "/")}

@@ -2,6 +2,7 @@ import React from "react";
 import AuthenticatedLayoutPasien from "../../Layouts/AuthenticatedLayoutPasien";
 import PasienSidebar from "../../Components/PasienSidebar";
 import { useForm } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
 
 export default function Dashboard({ pasien }) {
     const { post } = useForm();
@@ -19,10 +20,11 @@ export default function Dashboard({ pasien }) {
                 </h2>
             }
         >
+            <Head title="Dashboard" />
+
             <div className="flex">
                 {/* Sidebar Pasien */}
                 <PasienSidebar />
-
                 <div className="container mx-auto p-6 ml-0 bg-[#FBF8EF] rounded-lg shadow-lg w-full">
                     <h1 className="text-2xl font-bold text-[#475860]">
                         Selamat Datang, {pasien.nama}

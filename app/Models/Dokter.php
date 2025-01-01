@@ -32,4 +32,9 @@ class Dokter extends Model implements Authenticatable
     {
         return $this->belongsTo(Poli::class, 'id_poli');
     }
+    public function jadwalPeriksa()
+    {
+        return $this->hasMany(JadwalPeriksa::class, 'id_dokter');
+    }
+    
 }

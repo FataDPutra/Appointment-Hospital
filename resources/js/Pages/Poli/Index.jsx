@@ -1,4 +1,5 @@
 import React from "react";
+import { Head } from "@inertiajs/react";
 import { InertiaLink } from "@inertiajs/inertia-react";
 import { Inertia } from "@inertiajs/inertia";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
@@ -35,6 +36,7 @@ const PoliIndex = ({ polis }) => {
                 </h2>
             }
         >
+            <Head title="Daftar Poli" />
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 ml-0 bg-[#FBF8EF] rounded-lg shadow-lg w-full">

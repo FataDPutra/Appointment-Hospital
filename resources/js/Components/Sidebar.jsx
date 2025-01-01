@@ -74,7 +74,7 @@ export default function Sidebar() {
     const menuItems = userRole === "admin" ? adminMenuItems : dokterMenuItems;
 
     return (
-        <div className="w-64 h-screen bg-gradient-to-b from-[#78B3CE] to-[#C9E6F0] text-white shadow-lg relative">
+        <div className="w-64 bg-gradient-to-b from-[#78B3CE] to-[#C9E6F0] text-white shadow-lg min-h-screen sticky top-0">
             {/* Header Section */}
             <div className="flex flex-col items-center py-6 border-b border-[#C9E6F0]">
                 <div className="w-16 h-16 bg-[#F96E2A] rounded-full flex items-center justify-center shadow-md mb-3">
@@ -93,9 +93,9 @@ export default function Sidebar() {
                             <Link
                                 href={item.route} // Menggunakan route statis
                                 className={`flex items-center py-3 px-4 ${
-                                    isActive(item.route) // Cek apakah URL saat ini sama dengan route
-                                        ? "bg-[#FBF8EF] text-[#475860] font-semibold" // Jika aktif
-                                        : "bg-[#78B3CE] text-white hover:bg-[#FBF8EF] hover:text-[#78B3CE]" // Jika tidak aktif, warna latar belakang oranye
+                                    isActive(item.route)
+                                        ? "bg-[#FBF8EF] text-[#475860] font-semibold"
+                                        : "bg-[#78B3CE] text-white hover:bg-[#FBF8EF] hover:text-[#78B3CE]"
                                 } rounded-md transition-all shadow-sm`}
                             >
                                 {item.icon} {/* Menampilkan ikon */}

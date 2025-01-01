@@ -5,6 +5,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
 import Swal from "sweetalert2"; // Import SweetAlert
+import { Head } from "@inertiajs/react";
 
 const PoliEdit = ({ poli }) => {
     if (!poli) {
@@ -86,6 +87,7 @@ const PoliEdit = ({ poli }) => {
                 </h2>
             }
         >
+            <Head title="Edit Poli" />
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">

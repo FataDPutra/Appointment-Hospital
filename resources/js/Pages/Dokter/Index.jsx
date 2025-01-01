@@ -6,6 +6,7 @@ import { LuUserRoundPlus } from "react-icons/lu";
 import Swal from "sweetalert2"; // SweetAlert for delete confirmation
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar"; // Sidebar import
+import { Head } from "@inertiajs/react";
 
 const DokterIndex = ({ dokters }) => {
     // console.log(dokters);
@@ -36,6 +37,8 @@ const DokterIndex = ({ dokters }) => {
                 </h2>
             }
         >
+            <Head title="Daftar Dokter" />
+
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 ml-0 bg-[#FBF8EF] rounded-lg shadow-lg w-full">

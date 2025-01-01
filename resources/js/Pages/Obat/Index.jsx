@@ -6,6 +6,7 @@ import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
 import { GiMedicines } from "react-icons/gi";
+import { Head } from "@inertiajs/react";
 
 const ObatIndex = ({ obats }) => {
     const handleDelete = (id) => {
@@ -42,6 +43,8 @@ const ObatIndex = ({ obats }) => {
                 </h2>
             }
         >
+            <Head title="Daftar Obat" />
+
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 ml-0 bg-[#FBF8EF] rounded-lg shadow-lg w-full">

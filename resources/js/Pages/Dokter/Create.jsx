@@ -6,6 +6,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { FaUserPlus } from "react-icons/fa";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
+import { Head } from "@inertiajs/react";
 
 const CreateDokter = ({ poli }) => {
     const { data, setData, post, errors } = useForm({
@@ -44,6 +45,7 @@ const CreateDokter = ({ poli }) => {
                 </h2>
             }
         >
+            <Head title="Tambah Dokter" />
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">

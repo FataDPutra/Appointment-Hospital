@@ -1,5 +1,6 @@
 import { InertiaLink } from "@inertiajs/inertia-react";
 import { FaEdit } from "react-icons/fa";
+import { Head } from "@inertiajs/react";
 import { FaSuitcaseMedical } from "react-icons/fa6";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar"; // Pastikan untuk mengimpor Sidebar
@@ -22,6 +23,7 @@ const PeriksaIndex = ({ daftarPoli }) => {
                 </h2>
             }
         >
+            <Head title="Periksa" />
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 ml-0 bg-[#FBF8EF] rounded-lg shadow-lg w-full">

@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "@inertiajs/inertia-react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
+import { Head } from "@inertiajs/react";
 
 const DokterDashboard = ({ dokter, poli, jadwals }) => {
     return (
@@ -12,6 +13,8 @@ const DokterDashboard = ({ dokter, poli, jadwals }) => {
                 </h2>
             }
         >
+            <Head title="Dashboard Dokter" />
+
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 ml-0 bg-[#FBF8EF] rounded-lg shadow-lg w-full">

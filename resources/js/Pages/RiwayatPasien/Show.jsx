@@ -2,7 +2,7 @@ import React from "react";
 import { Inertia } from "@inertiajs/inertia"; // Import Inertia
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
-
+import { Head } from "@inertiajs/react";
 import { IoIosArrowBack } from "react-icons/io";
 
 export default function Show({ riwayat, pasien }) {
@@ -17,6 +17,7 @@ export default function Show({ riwayat, pasien }) {
                 </h2>
             }
         >
+            <Head title="Riwayat Lengkap Pasien" />
             <div className="flex">
                 <Sidebar />
 

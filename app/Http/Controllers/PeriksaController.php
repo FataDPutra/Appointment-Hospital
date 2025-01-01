@@ -38,8 +38,6 @@ public function index()
     ]);
 }
 
-
-
     public function show(DaftarPoli $daftarPoli)
     {
         // Menampilkan halaman detail untuk pemeriksaan pasien dengan mengambil data pasien
@@ -64,7 +62,7 @@ public function index()
         // Validasi input
         $request->validate([
             'catatan' => 'nullable|string',
-            'obat' => 'required|array',
+            'obat' => 'array',
             'obat.*' => 'exists:obat,id',
         ]);
 
@@ -114,7 +112,7 @@ public function index()
         // Validasi input
         $request->validate([
             'catatan' => 'nullable|string',
-            'obat' => 'required|array',
+            'obat' => 'array',
             'obat.*' => 'exists:obat,id',
         ]);
 

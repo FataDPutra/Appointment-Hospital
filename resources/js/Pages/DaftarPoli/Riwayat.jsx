@@ -3,6 +3,7 @@ import { InertiaLink } from "@inertiajs/inertia-react";
 import AuthenticatedLayoutPasien from "@/Layouts/AuthenticatedLayoutPasien";
 import PasienSidebar from "../../Components/PasienSidebar";
 import { FaArrowLeft } from "react-icons/fa"; // Import ikon untuk tombol kembali
+import { Head } from "@inertiajs/react";
 
 const Riwayat = ({ riwayat }) => {
     console.log(riwayat); // Debugging untuk melihat struktur data
@@ -15,6 +16,7 @@ const Riwayat = ({ riwayat }) => {
                 </h2>
             }
         >
+            <Head title="Detail Riwayat" />
             <div className="flex">
                 <PasienSidebar />
                 <div className="container mx-auto p-6 w-full bg-[#FBF8EF] rounded-lg shadow-md">

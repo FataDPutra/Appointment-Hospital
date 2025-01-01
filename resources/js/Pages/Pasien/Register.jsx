@@ -1,4 +1,5 @@
 import React from "react";
+import { Head } from "@inertiajs/react";
 import { useForm } from "@inertiajs/react";
 import {
     HiIdentification,
@@ -22,6 +23,8 @@ export default function Register() {
 
     return (
         <div className="min-h-screen bg-[#78B3CE] flex items-center justify-center">
+            <Head title="Register" />
+
             <div className="bg-[#FBF8EF] p-10 rounded-2xl shadow-xl w-full max-w-lg">
                 <h1 className="text-4xl font-extrabold text-center text-[#F96E2A] mb-8">
                     Pendaftaran Pasien

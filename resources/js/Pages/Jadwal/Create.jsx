@@ -6,6 +6,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { TbClockPlus } from "react-icons/tb";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
+import { Head } from "@inertiajs/react";
 
 const JadwalCreate = () => {
     const { data, setData, post, errors } = useForm({
@@ -32,6 +33,8 @@ const JadwalCreate = () => {
                 </h2>
             }
         >
+            <Head title="Tambah Jadwal" />
+
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">

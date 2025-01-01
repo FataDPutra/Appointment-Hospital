@@ -1,5 +1,6 @@
 import { useForm } from "@inertiajs/react";
 import { IoIosArrowBack } from "react-icons/io";
+import { Head } from "@inertiajs/react";
 import { FaSuitcaseMedical } from "react-icons/fa6";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
@@ -73,6 +74,7 @@ export default function Show({ daftarPoli, obat, pasien }) {
                 </h2>
             }
         >
+            <Head title="Pemeriksaan Pasien" />
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">

@@ -19,7 +19,7 @@ Pastikan perangkat Anda telah terpasang aplikasi berikut:
 1. **PHP** (>= 8.2)
 2. **Composer** (versi terbaru)
 3. **Node.js** (>= 20.x) dan **npm** atau **yarn**
-4. **PostgreSQL** atau basis data lain yang didukung
+4. **PostgreSQL**
 5. **Git**
 6. **Laravel CLI**
 

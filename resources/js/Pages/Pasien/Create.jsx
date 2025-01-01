@@ -5,6 +5,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { FaUserPlus } from "react-icons/fa";
 import Sidebar from "../../Components/Sidebar";
+import { Head } from "@inertiajs/react";
 
 const PasienCreate = () => {
     const { data, setData, post, errors } = useForm({
@@ -36,6 +37,7 @@ const PasienCreate = () => {
                 </h2>
             }
         >
+            <Head title="Tambah Pasien Baru" />
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">

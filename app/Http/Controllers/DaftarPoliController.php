@@ -3,42 +3,61 @@
 namespace App\Http\Controllers;
 
 use App\Models\DaftarPoli;
+use App\Models\Poli;
 use App\Models\JadwalPeriksa;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+
 class DaftarPoliController extends Controller
 {
-public function index()
-{
-    $pasien = session('pasien');
-    if (!$pasien) {
-        return redirect()->route('pasien.login');
+    public function index()
+    {
+        $pasien = session('pasien');
+        if (!$pasien) {
+            return redirect()->route('pasien.login');
+        }
+
+        $daftarPoli = DaftarPoli::with([
+            'jadwal.dokter.poli',
+            'periksa', // Menampilkan data pemeriksaan terkait
+            'periksa.detailPeriksa.obat' // Menampilkan detail obat yang diberikan
+        ])
+            ->where('id_pasien', $pasien['id'])
+            ->withTrashed() // Mengambil data, termasuk yang sudah di-soft delete
+            ->orderBy('created_at', 'desc') // Mengurutkan data terbaru di bagian atas
+            ->paginate(8); // Menambahkan pagination dengan 8 data per halaman
+
+        return Inertia::render('DaftarPoli/Index', [
+            'daftarPoli' => $daftarPoli,
+        ]);
     }
 
-    $daftarPoli = DaftarPoli::with([
-        'jadwal.dokter.poli',
-        'periksa', // Menampilkan data pemeriksaan terkait
-        'periksa.detailPeriksa.obat' // Menampilkan detail obat yang diberikan
-    ])
-        ->where('id_pasien', $pasien['id'])
-        ->withTrashed() // Mengambil data, termasuk yang sudah di-soft delete
-        ->get();
+    
 
-    return Inertia::render('DaftarPoli/Index', [
-        'daftarPoli' => $daftarPoli,
+    // public function create()
+    // {
+    //     // Ambil semua jadwal periksa yang tersedia untuk form pendaftaran
+    //     $jadwal = JadwalPeriksa::with(['dokter.poli'])->get();
+
+    //     return Inertia::render('DaftarPoli/Create', [
+    //         'jadwal' => $jadwal,
+    //     ]);
+    // }
+
+public function create()
+{
+    $jadwal = JadwalPeriksa::with(['dokter.poli'])->get();
+    $poli = Poli::all();
+
+    return Inertia::render('DaftarPoli/Create', [
+        'jadwal' => $jadwal,
+        'poli' => $poli,
     ]);
 }
 
-    public function create()
-    {
-        // Ambil semua jadwal periksa yang tersedia untuk form pendaftaran
-        $jadwal = JadwalPeriksa::with(['dokter.poli'])->get();
 
-        return Inertia::render('DaftarPoli/Create', [
-            'jadwal' => $jadwal,
-        ]);
-    }
+
 
 
     public function store(Request $request)

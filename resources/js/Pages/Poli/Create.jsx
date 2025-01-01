@@ -3,6 +3,7 @@ import { Inertia } from "@inertiajs/inertia";
 import { IoIosArrowBack } from "react-icons/io";
 import Sidebar from "../../Components/Sidebar";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { Head } from "@inertiajs/react";
 
 const PoliCreate = ({ errors: serverErrors = {} }) => {
     const [formData, setFormData] = useState({
@@ -31,6 +32,8 @@ const PoliCreate = ({ errors: serverErrors = {} }) => {
                 </h2>
             }
         >
+            <Head title="Tambah Poli" />
+
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">

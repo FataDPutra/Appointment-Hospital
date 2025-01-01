@@ -6,6 +6,7 @@ import { BiSolidUserPlus } from "react-icons/bi";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
 import Swal from "sweetalert2"; // Import SweetAlert2
+import { Head } from "@inertiajs/react";
 
 const PasienIndex = ({ pasiens }) => {
     const handleDelete = (id) => {
@@ -35,6 +36,7 @@ const PasienIndex = ({ pasiens }) => {
                 </h2>
             }
         >
+            <Head title="Daftar Pasien" />
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 ml-0 bg-[#FBF8EF] rounded-lg shadow-lg w-full">

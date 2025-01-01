@@ -6,6 +6,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
 import Swal from "sweetalert2"; // Import SweetAlert
+import { Head } from "@inertiajs/react";
 
 const PasienEdit = ({ pasien }) => {
     const { data, setData, put, errors } = useForm({
@@ -59,6 +60,8 @@ const PasienEdit = ({ pasien }) => {
                 </h2>
             }
         >
+            <Head title="Edit Pasien" />
+
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">

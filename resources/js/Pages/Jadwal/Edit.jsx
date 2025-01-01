@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Head } from "@inertiajs/react";
 import { useForm } from "@inertiajs/react";
 import Select from "react-select";
 import { Inertia } from "@inertiajs/inertia";
@@ -30,6 +31,7 @@ const JadwalEdit = ({ jadwal }) => {
                 </h2>
             }
         >
+            <Head title="Edit Jadwal" />
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">

@@ -7,6 +7,7 @@ import { CiAlarmOff, CiAlarmOn } from "react-icons/ci";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { InertiaLink } from "@inertiajs/inertia-react";
 import Sidebar from "../../Components/Sidebar"; // Make sure to import Sidebar
+import { Head } from "@inertiajs/react";
 
 const JadwalIndex = ({ jadwal }) => {
     // Fungsi untuk mengaktifkan jadwal
@@ -61,6 +62,7 @@ const JadwalIndex = ({ jadwal }) => {
                 </h2>
             }
         >
+            <Head title="Daftar Jadwal" />
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 ml-0 bg-[#FBF8EF] rounded-lg shadow-lg w-full">

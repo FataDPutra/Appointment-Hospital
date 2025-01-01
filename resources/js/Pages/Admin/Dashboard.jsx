@@ -130,6 +130,7 @@ export default function Dashboard({
                 </h2>
             }
         >
+            <Head title="Dashboard Admin" />
             <div className="flex">
                 {/* Sidebar */}
                 <Sidebar />

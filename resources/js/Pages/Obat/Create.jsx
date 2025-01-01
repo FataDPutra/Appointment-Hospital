@@ -4,6 +4,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { GiMedicinePills } from "react-icons/gi";
 import Sidebar from "../../Components/Sidebar";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { Head } from "@inertiajs/react";
 
 const ObatCreate = ({ errors: serverErrors = {} }) => {
     const [formData, setFormData] = useState({
@@ -54,6 +55,7 @@ const ObatCreate = ({ errors: serverErrors = {} }) => {
                 </h2>
             }
         >
+            <Head title="Tambah Obat" />
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">

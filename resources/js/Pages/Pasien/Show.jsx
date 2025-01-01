@@ -3,6 +3,7 @@ import { Inertia } from "@inertiajs/inertia";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
 import { IoIosArrowBack } from "react-icons/io";
+import { Head } from "@inertiajs/react";
 
 const PasienShow = ({ pasien }) => {
     return (
@@ -13,6 +14,7 @@ const PasienShow = ({ pasien }) => {
                 </h2>
             }
         >
+            <Head title="Detail Pasien" />
             <div className="flex">
                 {/* Sidebar */}
                 <Sidebar />

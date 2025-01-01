@@ -7,6 +7,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { FaUserEdit } from "react-icons/fa";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
+import { Head } from "@inertiajs/react";
 
 const EditDokter = ({ dokter, poli }) => {
     const [formData, setFormData] = useState({
@@ -85,6 +86,8 @@ const EditDokter = ({ dokter, poli }) => {
                 </h2>
             }
         >
+            <Head title="Edit Dokter" />
+
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">

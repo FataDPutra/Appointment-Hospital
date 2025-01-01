@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Head } from "@inertiajs/react";
 import { useForm } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 import { IoIosArrowBack } from "react-icons/io";
@@ -75,6 +76,7 @@ const PeriksaEdit = ({ periksa, obat, detailPeriksa }) => {
                 </h2>
             }
         >
+            <Head title="Edit Pemeriksaan" />
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">
