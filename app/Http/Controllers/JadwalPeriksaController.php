@@ -45,34 +45,66 @@ public function index()
         return Inertia::render('Jadwal/Create');
     }
 
+    public function store(Request $request)
+{
+    $request->validate([
+        'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
+        'jam_mulai' => 'required|date_format:H:i',
+        'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
+    ]);
+
+    // Cek jika sudah ada jadwal (baik aktif maupun nonaktif) pada hari tersebut
+    $existingSchedule = JadwalPeriksa::withTrashed() // Termasuk jadwal nonaktif
+    ->where('id_dokter', auth()->id())
+    ->where('hari', $request->hari)
+    ->exists();
+
+
+    if ($existingSchedule) {
+        return back()->withErrors(['jadwal' => 'Sudah ada jadwal di hari ini, baik aktif maupun nonaktif. Tidak dapat menambahkan jadwal baru.']);
+    }
+
+    // Simpan jadwal baru
+    JadwalPeriksa::create([
+        'id_dokter' => auth()->id(),
+        'hari' => $request->hari,
+        'jam_mulai' => $request->jam_mulai,
+        'jam_selesai' => $request->jam_selesai,
+    ]);
+
+    return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil ditambahkan.');
+}
+
+    //kasus hanya ada 1 jadwal yang aktif
+
     //     /**
     //  * Menyimpan jadwal baru.
     //  */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
-            'jam_mulai' => 'required|date_format:H:i',
-            'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
-        ]);
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
+    //         'jam_mulai' => 'required|date_format:H:i',
+    //         'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
+    //     ]);
 
-        // Cek konflik jadwal (termasuk soft deleted)
-        if (JadwalPeriksa::timeConflict(auth()->id(), $request->hari, $request->jam_mulai, $request->jam_selesai)->exists()) {
-            return back()->withErrors(['jadwal' => 'Jadwal bertumbukan dengan jadwal lain.']);
-        }
+    //     // Cek konflik jadwal (termasuk soft deleted)
+    //     if (JadwalPeriksa::timeConflict(auth()->id(), $request->hari, $request->jam_mulai, $request->jam_selesai)->exists()) {
+    //         return back()->withErrors(['jadwal' => 'Jadwal bertumbukan dengan jadwal lain.']);
+    //     }
 
-        // Simpan jadwal baru
-        JadwalPeriksa::create([
-            'id_dokter' => auth()->id(),
-            'hari' => $request->hari,
-            'jam_mulai' => $request->jam_mulai,
-            'jam_selesai' => $request->jam_selesai,
-            'deleted_at' => now(), // Tandai langsung sebagai tidak aktif
+    //     // Simpan jadwal baru
+    //     JadwalPeriksa::create([
+    //         'id_dokter' => auth()->id(),
+    //         'hari' => $request->hari,
+    //         'jam_mulai' => $request->jam_mulai,
+    //         'jam_selesai' => $request->jam_selesai,
+    //         'deleted_at' => now(), // Tandai langsung sebagai tidak aktif
 
-        ]);
+    //     ]);
 
-        return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil ditambahkan.');
-    }
+    //     return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil ditambahkan.');
+    // }
     
     
        /**
@@ -166,44 +198,82 @@ public function index()
 //     return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil diperbarui.');
 // }
 
+//kasus jadwal 1 yang aktif
 /**
      * Mengupdate jadwal yang ada.
      */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
-            'jam_mulai' => 'required|date_format:H:i',
-            'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
-        ]);
+    // public function update(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
+    //         'jam_mulai' => 'required|date_format:H:i',
+    //         'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
+    //     ]);
 
-        $jadwal = JadwalPeriksa::withTrashed()
-            ->where('id', $id)
-            ->where('id_dokter', auth()->id())
-            ->firstOrFail();
+    //     $jadwal = JadwalPeriksa::withTrashed()
+    //         ->where('id', $id)
+    //         ->where('id_dokter', auth()->id())
+    //         ->firstOrFail();
 
-        // Cek konflik jadwal (termasuk soft deleted)
-        if (JadwalPeriksa::timeConflict(auth()->id(), $request->hari, $request->jam_mulai, $request->jam_selesai)
-            ->where('id', '!=', $jadwal->id) // Kecualikan jadwal yang sedang diupdate
-            ->exists()) {
-            return back()->withErrors(['jadwal' => 'Jadwal bertumbukan dengan jadwal lain.']);
-        }
+    //     // Cek konflik jadwal (termasuk soft deleted)
+    //     if (JadwalPeriksa::timeConflict(auth()->id(), $request->hari, $request->jam_mulai, $request->jam_selesai)
+    //         ->where('id', '!=', $jadwal->id) // Kecualikan jadwal yang sedang diupdate
+    //         ->exists()) {
+    //         return back()->withErrors(['jadwal' => 'Jadwal bertumbukan dengan jadwal lain.']);
+    //     }
 
-        // Nonaktifkan semua jadwal lain sebelum memperbarui jadwal
-        JadwalPeriksa::where('id_dokter', auth()->id())
-            ->whereNull('deleted_at')
-            ->where('id', '!=', $id)
-            ->update(['deleted_at' => now()]);
+    //     // Nonaktifkan semua jadwal lain sebelum memperbarui jadwal
+    //     JadwalPeriksa::where('id_dokter', auth()->id())
+    //         ->whereNull('deleted_at')
+    //         ->where('id', '!=', $id)
+    //         ->update(['deleted_at' => now()]);
 
-        // Update jadwal
-        $jadwal->update([
-            'hari' => $request->hari,
-            'jam_mulai' => $request->jam_mulai,
-            'jam_selesai' => $request->jam_selesai,
-        ]);
+    //     // Update jadwal
+    //     $jadwal->update([
+    //         'hari' => $request->hari,
+    //         'jam_mulai' => $request->jam_mulai,
+    //         'jam_selesai' => $request->jam_selesai,
+    //     ]);
 
-        return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil diperbarui. Jadwal lain dinonaktifkan.');
+    //     return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil diperbarui. Jadwal lain dinonaktifkan.');
+    // }
+
+    // kasus tidak bisa menambahkan jadwal di hari yang sama
+ public function update(Request $request, $id)
+{
+    $request->validate([
+        'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
+        'jam_mulai' => 'required|date_format:H:i',
+        'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
+    ]);
+
+    $jadwal = JadwalPeriksa::withTrashed()
+        ->where('id', $id)
+        ->where('id_dokter', auth()->id())
+        ->firstOrFail();
+
+    // Cek jika sudah ada jadwal lain (termasuk soft deleted) pada hari tersebut
+    $existingSchedule = JadwalPeriksa::withTrashed()
+        ->where('id_dokter', auth()->id())
+        ->where('hari', $request->hari)
+        ->where('id', '!=', $jadwal->id)
+        ->exists();
+
+    if ($existingSchedule) {
+        return back()->withErrors(['jadwal' => 'Sudah ada jadwal di hari ini, baik aktif maupun nonaktif. Tidak dapat memperbarui jadwal.']);
     }
+
+    // Update jadwal
+    $jadwal->update([
+        'hari' => $request->hari,
+        'jam_mulai' => $request->jam_mulai,
+        'jam_selesai' => $request->jam_selesai,
+    ]);
+
+    return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil diperbarui.');
+}
+
+
 
 
 
