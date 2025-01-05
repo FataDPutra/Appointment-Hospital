@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useForm } from "@inertiajs/inertia-react";
-import { Inertia } from "@inertiajs/inertia";
+import { useForm } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
 import Select from "react-select";
+import { Inertia } from "@inertiajs/inertia";
 import { IoIosArrowBack } from "react-icons/io";
 import { TbClockPlus } from "react-icons/tb";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
-import { Head } from "@inertiajs/react";
 
 const JadwalCreate = () => {
     const { data, setData, post, errors } = useForm({
@@ -21,6 +21,11 @@ const JadwalCreate = () => {
         e.preventDefault();
         setIsSubmitting(true);
         post(route("jadwal.store"), {
+            onSuccess: () => {
+                setData({ hari: "", jam_mulai: "", jam_selesai: "" });
+                alert("Jadwal berhasil ditambahkan!");
+            },
+            onError: (errorMessages) => console.error(errorMessages),
             onFinish: () => setIsSubmitting(false),
         });
     };
@@ -34,7 +39,6 @@ const JadwalCreate = () => {
             }
         >
             <Head title="Tambah Jadwal" />
-
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">
@@ -50,9 +54,9 @@ const JadwalCreate = () => {
                             </ul>
                         </div>
                     )}
+
                     <form onSubmit={handleSubmit}>
                         <div className="space-y-6">
-                            {/* Input Hari */}
                             <div>
                                 <label className="block mb-2 text-[#78B3CE]">
                                     Hari
@@ -67,20 +71,19 @@ const JadwalCreate = () => {
                                         { value: "Sabtu", label: "Sabtu" },
                                         { value: "Minggu", label: "Minggu" },
                                     ]}
-                                    value={{
-                                        value: data.hari,
-                                        label: data.hari, // Tentukan label sesuai dengan value hari yang dipilih
-                                    }}
-                                    onChange={(option) => {
-                                        // Pastikan hanya value yang dipilih yang diset
-                                        setData(
-                                            "hari",
-                                            option ? option.value : ""
-                                        );
-                                    }}
+                                    value={
+                                        data.hari
+                                            ? {
+                                                  value: data.hari,
+                                                  label: data.hari,
+                                              }
+                                            : null
+                                    }
+                                    onChange={(selectedOption) =>
+                                        setData("hari", selectedOption.value)
+                                    }
                                     placeholder="Pilih Hari"
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
-                                    required
                                 />
                                 {errors.hari && (
                                     <div className="text-red-500 mt-1">
@@ -89,7 +92,6 @@ const JadwalCreate = () => {
                                 )}
                             </div>
 
-                            {/* Input Jam Mulai */}
                             <div>
                                 <label className="block mb-2 text-[#78B3CE]">
                                     Jam Mulai
@@ -101,7 +103,6 @@ const JadwalCreate = () => {
                                         setData("jam_mulai", e.target.value)
                                     }
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
-                                    required
                                 />
                                 {errors.jam_mulai && (
                                     <div className="text-red-500 mt-1">
@@ -110,7 +111,6 @@ const JadwalCreate = () => {
                                 )}
                             </div>
 
-                            {/* Input Jam Selesai */}
                             <div>
                                 <label className="block mb-2 text-[#78B3CE]">
                                     Jam Selesai
@@ -122,7 +122,6 @@ const JadwalCreate = () => {
                                         setData("jam_selesai", e.target.value)
                                     }
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
-                                    required
                                 />
                                 {errors.jam_selesai && (
                                     <div className="text-red-500 mt-1">
@@ -132,7 +131,6 @@ const JadwalCreate = () => {
                             </div>
 
                             <div className="mt-6 flex space-x-4">
-                                {/* Tombol Back */}
                                 <button
                                     type="button"
                                     onClick={() =>
@@ -143,8 +141,6 @@ const JadwalCreate = () => {
                                     <IoIosArrowBack className="w-5 h-5" />
                                     <span className="text-lg">Kembali</span>
                                 </button>
-
-                                {/* Tombol Simpan */}
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
