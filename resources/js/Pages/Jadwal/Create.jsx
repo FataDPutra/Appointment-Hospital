@@ -5,6 +5,7 @@ import Select from "react-select";
 import { Inertia } from "@inertiajs/inertia";
 import { IoIosArrowBack } from "react-icons/io";
 import { TbClockPlus } from "react-icons/tb";
+import Swal from "sweetalert2"; // Import SweetAlert2
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
 
@@ -20,13 +21,35 @@ const JadwalCreate = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        post(route("jadwal.store"), {
-            onSuccess: () => {
-                setData({ hari: "", jam_mulai: "", jam_selesai: "" });
-                alert("Jadwal berhasil ditambahkan!");
-            },
-            onError: (errorMessages) => console.error(errorMessages),
-            onFinish: () => setIsSubmitting(false),
+
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Jadwal akan disimpan!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, simpan!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                post(route("jadwal.store"), {
+                    onError: (err) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal disimpan",
+                            text: err.hari || err.jam_mulai || err.jam_selesai,
+                        });
+                    },
+                    onSuccess: () => {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: "Jadwal berhasil disimpan!",
+                        });
+                    },
+                    onFinish: () => setIsSubmitting(false), // Reset state after process finishes
+                });
+            }
         });
     };
 

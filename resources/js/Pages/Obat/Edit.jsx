@@ -1,60 +1,34 @@
 import React, { useState } from "react";
+import { useForm } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
+import Swal from "sweetalert2";
 import { Inertia } from "@inertiajs/inertia";
-import { GiMedicinePills } from "react-icons/gi";
 import { IoIosArrowBack } from "react-icons/io";
+import { GiMedicinePills } from "react-icons/gi";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
-import Swal from "sweetalert2";
-import { Head } from "@inertiajs/react";
 
 const ObatEdit = ({ obat }) => {
-    if (!obat) {
-        return <div>Loading...</div>;
-    }
-
-    // Initialize state for form data and original data
-    const [formData, setFormData] = useState({
+    const { data, setData, put, errors } = useForm({
         nama_obat: obat.nama_obat || "",
         kemasan: obat.kemasan || "",
         harga: obat.harga || "",
     });
 
-    const originalData = {
-        nama_obat: obat.nama_obat || "",
-        kemasan: obat.kemasan || "",
-        harga: obat.harga || "",
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleHargaChange = (e) => {
+        const rawValue = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+        setData("harga", rawValue);
     };
 
-    const [errors, setErrors] = useState({});
+    const formatHarga = (value) =>
+        `Rp. ${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`; // Add thousands separator
 
-    // Update form data on input change
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    // Submit handler
     const handleSubmit = (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
-        // Check if the form data is different from the original data
-        const hasChanges = Object.keys(formData).some(
-            (key) => formData[key] !== originalData[key]
-        );
-
-        if (!hasChanges) {
-            Swal.fire({
-                icon: "info",
-                title: "Tidak ada perubahan",
-                text: "Data tidak berubah, tidak ada yang disimpan.",
-            });
-            return;
-        }
-
-        // Confirm before submission
         Swal.fire({
             title: "Apakah Anda yakin?",
             text: "Data obat ini akan diperbarui!",
@@ -65,18 +39,25 @@ const ObatEdit = ({ obat }) => {
             reverseButtons: true,
         }).then((result) => {
             if (result.isConfirmed) {
-                Inertia.put(`/obats/${obat.id}`, formData, {
+                put(route("obats.update", obat.id), {
+                    onError: (err) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal diperbarui",
+                            text: err.nama_obat || err.kemasan || err.harga,
+                        });
+                    },
                     onSuccess: () => {
-                        Swal.fire(
-                            "Berhasil!",
-                            "Data obat berhasil diperbarui.",
-                            "success"
-                        );
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: "Data obat berhasil diperbarui!",
+                        });
                     },
-                    onError: (errors) => {
-                        setErrors(errors);
-                    },
+                    onFinish: () => setIsSubmitting(false),
                 });
+            } else {
+                setIsSubmitting(false); // Reset state jika dibatalkan
             }
         });
     };
@@ -84,16 +65,17 @@ const ObatEdit = ({ obat }) => {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-2xl font-semibold leading-tight text-gray-800">
+                <h2 className="text-2xl font-semibold leading-tight">
                     Edit Obat
                 </h2>
             }
         >
             <Head title="Edit Obat" />
+
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">
-                    {/* Display global error messages */}
+                    {/* Pesan Error Global */}
                     {Object.keys(errors).length > 0 && (
                         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
                             <strong className="font-bold">
@@ -109,6 +91,7 @@ const ObatEdit = ({ obat }) => {
 
                     <form onSubmit={handleSubmit}>
                         <div className="space-y-6">
+                            {/* Input Nama Obat */}
                             <div>
                                 <label className="block mb-2 text-[#78B3CE]">
                                     Nama Obat
@@ -116,9 +99,15 @@ const ObatEdit = ({ obat }) => {
                                 <input
                                     type="text"
                                     name="nama_obat"
-                                    value={formData.nama_obat}
-                                    onChange={handleChange}
-                                    className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
+                                    value={data.nama_obat}
+                                    onChange={(e) =>
+                                        setData("nama_obat", e.target.value)
+                                    }
+                                    className={`w-full border ${
+                                        errors.nama_obat
+                                            ? "border-red-500"
+                                            : "border-[#78B3CE]"
+                                    } rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all`}
                                     placeholder="Masukkan nama obat"
                                 />
                                 {errors.nama_obat && (
@@ -128,6 +117,7 @@ const ObatEdit = ({ obat }) => {
                                 )}
                             </div>
 
+                            {/* Input Kemasan */}
                             <div>
                                 <label className="block mb-2 text-[#78B3CE]">
                                     Kemasan
@@ -135,9 +125,15 @@ const ObatEdit = ({ obat }) => {
                                 <input
                                     type="text"
                                     name="kemasan"
-                                    value={formData.kemasan}
-                                    onChange={handleChange}
-                                    className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
+                                    value={data.kemasan}
+                                    onChange={(e) =>
+                                        setData("kemasan", e.target.value)
+                                    }
+                                    className={`w-full border ${
+                                        errors.kemasan
+                                            ? "border-red-500"
+                                            : "border-[#78B3CE]"
+                                    } rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all`}
                                     placeholder="Masukkan kemasan obat"
                                 />
                                 {errors.kemasan && (
@@ -147,6 +143,7 @@ const ObatEdit = ({ obat }) => {
                                 )}
                             </div>
 
+                            {/* Input Harga */}
                             <div>
                                 <label className="block mb-2 text-[#78B3CE]">
                                     Harga
@@ -154,9 +151,13 @@ const ObatEdit = ({ obat }) => {
                                 <input
                                     type="text"
                                     name="harga"
-                                    value={formData.harga}
-                                    onChange={handleChange}
-                                    className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
+                                    value={formatHarga(data.harga)}
+                                    onChange={handleHargaChange}
+                                    className={`w-full border ${
+                                        errors.harga
+                                            ? "border-red-500"
+                                            : "border-[#78B3CE]"
+                                    } rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all`}
                                     placeholder="Masukkan harga obat"
                                 />
                                 {errors.harga && (
@@ -167,6 +168,7 @@ const ObatEdit = ({ obat }) => {
                             </div>
 
                             <div className="mt-6 flex space-x-4">
+                                {/* Tombol Kembali */}
                                 <button
                                     type="button"
                                     onClick={() =>
@@ -178,12 +180,22 @@ const ObatEdit = ({ obat }) => {
                                     <span className="text-lg">Kembali</span>
                                 </button>
 
+                                {/* Tombol Simpan */}
                                 <button
                                     type="submit"
-                                    className="bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out"
+                                    disabled={isSubmitting}
+                                    className={`bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out ${
+                                        isSubmitting
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
                                 >
                                     <GiMedicinePills className="w-5 h-5" />
-                                    <span className="text-lg">Update Obat</span>
+                                    <span className="text-lg">
+                                        {isSubmitting
+                                            ? "Menyimpan..."
+                                            : "Update Obat"}
+                                    </span>
                                 </button>
                             </div>
                         </div>

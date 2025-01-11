@@ -30,6 +30,11 @@ class ObatController extends Controller
             'nama_obat' => 'required|string|max:255',
             'kemasan' => 'required|string|max:255',
             'harga' => 'required|integer',
+        ],
+        [
+            'nama_obat.required' => 'Nama obat harus diisi.',
+            'kemasan.required' => 'Kemasan harus diisi.',
+            'harga.required' => 'Harga harus diisi.',
         ]);
 
         Obat::create($request->all());
@@ -62,6 +67,10 @@ class ObatController extends Controller
             'nama_obat' => 'required|string|max:255',
             'kemasan' => 'required|string|max:255',
             'harga' => 'required|integer',
+        ],[
+            'nama_obat.required' => 'Nama obat harus diisi.',
+            'kemasan.required' => 'Kemasan harus diisi.',
+            'harga.required' => 'Harga harus diisi.',
         ]);
 
         $obat = Obat::findOrFail($id);

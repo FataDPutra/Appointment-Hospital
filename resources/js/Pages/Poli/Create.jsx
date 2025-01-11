@@ -1,26 +1,55 @@
 import React, { useState } from "react";
-import { Inertia } from "@inertiajs/inertia";
-import { IoIosArrowBack } from "react-icons/io";
-import Sidebar from "../../Components/Sidebar";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { useForm } from "@inertiajs/react";
 import { Head } from "@inertiajs/react";
+import Swal from "sweetalert2";
+import { Inertia } from "@inertiajs/inertia";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import Sidebar from "../../Components/Sidebar";
+import { IoIosArrowBack } from "react-icons/io";
+import { FaClinicMedical } from "react-icons/fa";
 
-const PoliCreate = ({ errors: serverErrors = {} }) => {
-    const [formData, setFormData] = useState({
+const PoliCreate = () => {
+    const { data, setData, post, errors } = useForm({
         nama_poli: "",
         keterangan: "",
     });
 
-    const [errors, setErrors] = useState(serverErrors);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        Inertia.post("/polis", formData, {
-            onFinish: () => setIsSubmitting(false),
-            onError: (err) => setErrors(err), // Handle errors from server
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Data poli ini akan ditambahkan!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, tambahkan!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                post(route("polis.store"), {
+                    onError: (err) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal menyimpan",
+                            text: err.nama_poli || err.keterangan,
+                        });
+                    },
+                    onSuccess: () => {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: "Data poli berhasil ditambahkan!",
+                        });
+                    },
+                    onFinish: () => setIsSubmitting(false), // Reset state setelah selesai
+                });
+            } else {
+                setIsSubmitting(false); // Reset state jika dibatalkan
+            }
         });
     };
 
@@ -32,11 +61,24 @@ const PoliCreate = ({ errors: serverErrors = {} }) => {
                 </h2>
             }
         >
-            <Head title="Tambah Poli" />
-
+            <Head title="Tambah Poli Baru" />
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">
+                    {/* Pesan Error Global */}
+                    {Object.keys(errors).length > 0 && (
+                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                            <strong className="font-bold">
+                                Terjadi kesalahan!
+                            </strong>
+                            <ul className="list-disc pl-5">
+                                {Object.values(errors).map((error, index) => (
+                                    <li key={index}>{error}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit}>
                         <div className="space-y-6">
                             {/* Input Nama Poli */}
@@ -45,15 +87,10 @@ const PoliCreate = ({ errors: serverErrors = {} }) => {
                                     Nama Poli
                                 </label>
                                 <input
-                                    id="nama_poli"
                                     type="text"
-                                    name="nama_poli"
-                                    value={formData.nama_poli}
+                                    value={data.nama_poli}
                                     onChange={(e) =>
-                                        setFormData({
-                                            ...formData,
-                                            nama_poli: e.target.value,
-                                        })
+                                        setData("nama_poli", e.target.value)
                                     }
                                     className={`w-full border ${
                                         errors.nama_poli
@@ -61,7 +98,6 @@ const PoliCreate = ({ errors: serverErrors = {} }) => {
                                             : "border-[#78B3CE]"
                                     } rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all`}
                                     placeholder="Masukkan nama poli"
-                                    required
                                 />
                                 {errors.nama_poli && (
                                     <div className="text-red-500 mt-1">
@@ -76,14 +112,9 @@ const PoliCreate = ({ errors: serverErrors = {} }) => {
                                     Keterangan
                                 </label>
                                 <textarea
-                                    id="keterangan"
-                                    name="keterangan"
-                                    value={formData.keterangan}
+                                    value={data.keterangan}
                                     onChange={(e) =>
-                                        setFormData({
-                                            ...formData,
-                                            keterangan: e.target.value,
-                                        })
+                                        setData("keterangan", e.target.value)
                                     }
                                     className={`w-full border ${
                                         errors.keterangan
@@ -91,7 +122,6 @@ const PoliCreate = ({ errors: serverErrors = {} }) => {
                                             : "border-[#78B3CE]"
                                     } rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all`}
                                     placeholder="Masukkan keterangan poli"
-                                    required
                                 />
                                 {errors.keterangan && (
                                     <div className="text-red-500 mt-1">
@@ -101,7 +131,7 @@ const PoliCreate = ({ errors: serverErrors = {} }) => {
                             </div>
 
                             <div className="mt-6 flex space-x-4">
-                                {/* Back Button */}
+                                {/* Tombol Kembali */}
                                 <button
                                     type="button"
                                     onClick={() =>
@@ -113,7 +143,7 @@ const PoliCreate = ({ errors: serverErrors = {} }) => {
                                     <span className="text-lg">Kembali</span>
                                 </button>
 
-                                {/* Submit Button */}
+                                {/* Tombol Simpan */}
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
@@ -123,6 +153,7 @@ const PoliCreate = ({ errors: serverErrors = {} }) => {
                                             : ""
                                     }`}
                                 >
+                                    <FaClinicMedical className="w-5 h-5" />
                                     <span className="text-lg">
                                         {isSubmitting
                                             ? "Menyimpan..."

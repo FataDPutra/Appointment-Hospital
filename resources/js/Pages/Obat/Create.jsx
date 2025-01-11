@@ -1,64 +1,94 @@
 import React, { useState } from "react";
+import { useForm } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
+import Swal from "sweetalert2";
 import { Inertia } from "@inertiajs/inertia";
 import { IoIosArrowBack } from "react-icons/io";
 import { GiMedicinePills } from "react-icons/gi";
-import Sidebar from "../../Components/Sidebar";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import Sidebar from "../../Components/Sidebar";
 
-const ObatCreate = ({ errors: serverErrors = {} }) => {
-    const [formData, setFormData] = useState({
+const ObatCreate = () => {
+    const { data, setData, post, errors } = useForm({
         nama_obat: "",
         kemasan: "",
         harga: "",
     });
 
-    const [errors, setErrors] = useState(serverErrors);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Format Harga with Rp. (display only)
     const handleHargaChange = (e) => {
         const rawValue = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
-        const formattedValue = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Add thousands separator
-        setFormData({
-            ...formData,
-            harga: formattedValue, // Store formatted value in state
-        });
+        setData("harga", rawValue);
     };
+
+    const formatHarga = (value) =>
+        `Rp. ${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`; // Add thousands separator
 
     const handleSubmit = (e) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Remove the "Rp." formatting before submitting
-        const numericHarga = formData.harga.replace(/\./g, ""); // Remove thousands separator
-
-        // Send only numeric value of harga to the server
-        Inertia.post(
-            "/obats",
-            {
-                ...formData,
-                harga: numericHarga,
-            },
-            {
-                onFinish: () => setIsSubmitting(false),
-                onError: (err) => setErrors(err), // Handle errors from the server
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Data obat akan disimpan!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, simpan!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                post(route("obats.store"), {
+                    onError: (err) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal disimpan",
+                            text: err.nama_obat || err.kemasan || err.harga,
+                        });
+                    },
+                    onSuccess: () => {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: "Data obat berhasil disimpan!",
+                        });
+                    },
+                    onFinish: () => setIsSubmitting(false),
+                });
+            } else {
+                setIsSubmitting(false); // Reset state jika dibatalkan
             }
-        );
+        });
     };
 
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-2xl font-semibold leading-tight">
-                    Tambah Obat Baru
+                    Tambah Obat
                 </h2>
             }
         >
             <Head title="Tambah Obat" />
+
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">
+                    {/* Pesan Error Global */}
+                    {Object.keys(errors).length > 0 && (
+                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                            <strong className="font-bold">
+                                Terjadi kesalahan!
+                            </strong>
+                            <ul className="list-disc pl-5">
+                                {Object.values(errors).map((error, index) => (
+                                    <li key={index}>{error}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit}>
                         <div className="space-y-6">
                             {/* Input Nama Obat */}
@@ -67,15 +97,11 @@ const ObatCreate = ({ errors: serverErrors = {} }) => {
                                     Nama Obat
                                 </label>
                                 <input
-                                    id="nama_obat"
                                     type="text"
                                     name="nama_obat"
-                                    value={formData.nama_obat}
+                                    value={data.nama_obat}
                                     onChange={(e) =>
-                                        setFormData({
-                                            ...formData,
-                                            nama_obat: e.target.value,
-                                        })
+                                        setData("nama_obat", e.target.value)
                                     }
                                     className={`w-full border ${
                                         errors.nama_obat
@@ -83,7 +109,6 @@ const ObatCreate = ({ errors: serverErrors = {} }) => {
                                             : "border-[#78B3CE]"
                                     } rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all`}
                                     placeholder="Masukkan nama obat"
-                                    required
                                 />
                                 {errors.nama_obat && (
                                     <div className="text-red-500 mt-1">
@@ -98,15 +123,11 @@ const ObatCreate = ({ errors: serverErrors = {} }) => {
                                     Kemasan
                                 </label>
                                 <input
-                                    id="kemasan"
                                     type="text"
                                     name="kemasan"
-                                    value={formData.kemasan}
+                                    value={data.kemasan}
                                     onChange={(e) =>
-                                        setFormData({
-                                            ...formData,
-                                            kemasan: e.target.value,
-                                        })
+                                        setData("kemasan", e.target.value)
                                     }
                                     className={`w-full border ${
                                         errors.kemasan
@@ -114,7 +135,6 @@ const ObatCreate = ({ errors: serverErrors = {} }) => {
                                             : "border-[#78B3CE]"
                                     } rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all`}
                                     placeholder="Masukkan kemasan obat"
-                                    required
                                 />
                                 {errors.kemasan && (
                                     <div className="text-red-500 mt-1">
@@ -129,10 +149,9 @@ const ObatCreate = ({ errors: serverErrors = {} }) => {
                                     Harga
                                 </label>
                                 <input
-                                    id="harga"
                                     type="text"
                                     name="harga"
-                                    value={`Rp. ${formData.harga}`} // Display "Rp." with the value
+                                    value={formatHarga(data.harga)}
                                     onChange={handleHargaChange}
                                     className={`w-full border ${
                                         errors.harga
@@ -140,7 +159,6 @@ const ObatCreate = ({ errors: serverErrors = {} }) => {
                                             : "border-[#78B3CE]"
                                     } rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all`}
                                     placeholder="Masukkan harga obat"
-                                    required
                                 />
                                 {errors.harga && (
                                     <div className="text-red-500 mt-1">
@@ -150,7 +168,7 @@ const ObatCreate = ({ errors: serverErrors = {} }) => {
                             </div>
 
                             <div className="mt-6 flex space-x-4">
-                                {/* Back Button */}
+                                {/* Tombol Kembali */}
                                 <button
                                     type="button"
                                     onClick={() =>
@@ -162,7 +180,7 @@ const ObatCreate = ({ errors: serverErrors = {} }) => {
                                     <span className="text-lg">Kembali</span>
                                 </button>
 
-                                {/* Submit Button */}
+                                {/* Tombol Simpan */}
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}

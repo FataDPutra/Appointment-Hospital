@@ -20,7 +20,13 @@ class AuthPasienController extends Controller
             'alamat' => 'required|string|max:255',
             'no_ktp' => 'required|digits:16|unique:pasien',
             'no_hp' => 'required|digits_between:10,15',
-        ]);
+        ],[
+        'nama.required' => 'Nama pasien harus diisi.',
+        'alamat.required' => 'Alamat harus diisi.',
+        'no_hp.required' => 'Nomor HP harus diisi.',
+        'no_ktp.required' => 'Nomor KTP harus diisi.',
+        'no_ktp.unique' => 'Nomor KTP sudah terdaftar untuk pasien lain.',
+    ]);
 
         $no_rm = $this->generateNoRM();
 
@@ -46,6 +52,9 @@ class AuthPasienController extends Controller
     {
         $request->validate([
             'no_rm' => 'required|string|exists:pasien,no_rm',
+        ],[
+            'no_rm.required' => 'No RM harus diisi.',
+            'no_rm.exists' => 'No RM tidak ditemukan.', 
         ]);
 
         $pasien = Pasien::where('no_rm', $request->no_rm)->first();

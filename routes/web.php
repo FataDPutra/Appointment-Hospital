@@ -68,6 +68,8 @@ Route::middleware(['auth', CheckRole::class.':dokter'])->group(function () {
 
     // Hapus jadwal (soft delete)
     Route::delete('/jadwal/{id}', [JadwalPeriksaController::class, 'destroy'])->name('jadwal.destroy');
+    Route::delete('/jadwal/{id}/force-delete', [JadwalPeriksaController::class, 'forceDelete'])->name('jadwal.forceDelete');
+
 
     Route::get('/periksa', [PeriksaController::class, 'index'])->name('periksa.index');
     Route::get('/periksa/{daftarPoli}', [PeriksaController::class, 'show'])->name('periksa.show');

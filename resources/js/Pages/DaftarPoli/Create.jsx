@@ -5,6 +5,7 @@ import { Head } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaUserPlus } from "react-icons/fa";
+import Swal from "sweetalert2"; // Import SweetAlert2
 import AuthenticatedLayoutPasien from "@/Layouts/AuthenticatedLayoutPasien";
 import PasienSidebar from "../../Components/PasienSidebar";
 
@@ -41,7 +42,26 @@ const Create = ({ poli, jadwal }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route("daftar-poli.store"));
+        post(route("daftar-poli.store"), {
+            onSuccess: () => {
+                Swal.fire({
+                    title: "Berhasil!",
+                    text: "Pendaftaran berhasil dilakukan.",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                }).then(() => {
+                    Inertia.visit(route("daftar-poli.index"));
+                });
+            },
+            onError: () => {
+                Swal.fire({
+                    title: "Gagal!",
+                    text: "Terjadi kesalahan saat pendaftaran.",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+            },
+        });
     };
 
     const poliOptions = poli.map((item) => ({

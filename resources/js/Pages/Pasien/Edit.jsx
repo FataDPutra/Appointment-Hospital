@@ -1,42 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
+import { useForm } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
+import Swal from "sweetalert2";
 import { Inertia } from "@inertiajs/inertia";
-import { useForm } from "@inertiajs/inertia-react";
-import { FaUserEdit } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
+import { FaUserEdit } from "react-icons/fa";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
-import Swal from "sweetalert2"; // Import SweetAlert
-import { Head } from "@inertiajs/react";
 
-const PasienEdit = ({ pasien }) => {
+const EditPasien = ({ pasien }) => {
     const { data, setData, put, errors } = useForm({
-        nama: pasien.nama,
-        alamat: pasien.alamat,
-        no_ktp: pasien.no_ktp,
-        no_hp: pasien.no_hp,
+        nama: pasien.nama || "",
+        alamat: pasien.alamat || "",
+        no_ktp: pasien.no_ktp || "",
+        no_hp: pasien.no_hp || "",
     });
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        // Validasi angka untuk No KTP dan No HP
+        if (name === "no_ktp" || name === "no_hp") {
+            setData(name, value.replace(/\D/g, ""));
+        } else {
+            setData(name, value);
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
-        // Periksa apakah ada perubahan data
-        const dataChanged =
-            data.nama !== pasien.nama ||
-            data.alamat !== pasien.alamat ||
-            data.no_ktp !== pasien.no_ktp ||
-            data.no_hp !== pasien.no_hp;
-
-        // Jika tidak ada perubahan, tampilkan pesan
-        if (!dataChanged) {
-            Swal.fire({
-                icon: "info",
-                title: "Tidak ada perubahan",
-                text: "Data tidak berubah, tidak ada yang disimpan.",
-            });
-            return;
-        }
-
-        // Jika ada perubahan, lanjutkan dengan konfirmasi
         Swal.fire({
             title: "Apakah Anda yakin?",
             text: "Data pasien ini akan diperbarui!",
@@ -47,7 +43,25 @@ const PasienEdit = ({ pasien }) => {
             reverseButtons: true,
         }).then((result) => {
             if (result.isConfirmed) {
-                put(route("pasiens.update", pasien.id));
+                put(route("pasiens.update", pasien.id), {
+                    onError: (err) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal diperbarui",
+                            text: err.nama || err.no_ktp,
+                        });
+                    },
+                    onSuccess: () => {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: "Data pasien berhasil diperbarui!",
+                        });
+                    },
+                    onFinish: () => setIsSubmitting(false),
+                });
+            } else {
+                setIsSubmitting(false); // Reset state jika dibatalkan
             }
         });
     };
@@ -65,7 +79,7 @@ const PasienEdit = ({ pasien }) => {
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">
-                    {/* Tampilkan pesan kesalahan global jika ada */}
+                    {/* Pesan Error */}
                     {Object.keys(errors).length > 0 && (
                         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
                             <strong className="font-bold">
@@ -101,10 +115,9 @@ const PasienEdit = ({ pasien }) => {
                                 </label>
                                 <input
                                     type="text"
+                                    name="nama"
                                     value={data.nama}
-                                    onChange={(e) =>
-                                        setData("nama", e.target.value)
-                                    }
+                                    onChange={handleChange}
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
                                     placeholder="Masukkan nama pasien"
                                 />
@@ -122,10 +135,9 @@ const PasienEdit = ({ pasien }) => {
                                 </label>
                                 <input
                                     type="text"
+                                    name="alamat"
                                     value={data.alamat}
-                                    onChange={(e) =>
-                                        setData("alamat", e.target.value)
-                                    }
+                                    onChange={handleChange}
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
                                     placeholder="Masukkan alamat pasien"
                                 />
@@ -143,10 +155,9 @@ const PasienEdit = ({ pasien }) => {
                                 </label>
                                 <input
                                     type="text"
+                                    name="no_ktp"
                                     value={data.no_ktp}
-                                    onChange={(e) =>
-                                        setData("no_ktp", e.target.value)
-                                    }
+                                    onChange={handleChange}
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
                                     placeholder="Masukkan nomor KTP pasien"
                                 />
@@ -164,10 +175,9 @@ const PasienEdit = ({ pasien }) => {
                                 </label>
                                 <input
                                     type="text"
+                                    name="no_hp"
                                     value={data.no_hp}
-                                    onChange={(e) =>
-                                        setData("no_hp", e.target.value)
-                                    }
+                                    onChange={handleChange}
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
                                     placeholder="Masukkan nomor HP pasien"
                                 />
@@ -178,27 +188,33 @@ const PasienEdit = ({ pasien }) => {
                                 )}
                             </div>
 
+                            {/* Tombol Aksi */}
                             <div className="mt-6 flex space-x-4">
-                                {/* Tombol Back */}
                                 <button
                                     type="button"
                                     onClick={() =>
                                         Inertia.visit(route("pasiens.index"))
-                                    } // Navigate to the list of pasien
+                                    }
                                     className="bg-gray-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-gray-600 flex items-center space-x-2 transition duration-200 ease-in-out"
                                 >
                                     <IoIosArrowBack className="w-5 h-5" />
-                                    <span className="text-lg">Back</span>
+                                    <span className="text-lg">Kembali</span>
                                 </button>
 
-                                {/* Tombol Update */}
                                 <button
                                     type="submit"
-                                    className="bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out"
+                                    disabled={isSubmitting}
+                                    className={`bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out ${
+                                        isSubmitting
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
                                 >
                                     <FaUserEdit className="w-5 h-5" />
                                     <span className="text-lg">
-                                        Update Pasien
+                                        {isSubmitting
+                                            ? "Menyimpan..."
+                                            : "Update Pasien"}
                                     </span>
                                 </button>
                             </div>
@@ -210,4 +226,4 @@ const PasienEdit = ({ pasien }) => {
     );
 };
 
-export default PasienEdit;
+export default EditPasien;

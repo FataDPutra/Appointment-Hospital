@@ -6,7 +6,7 @@ import {
     HiHome,
     HiPhone,
     HiDocumentText,
-} from "react-icons/hi"; // Add icons
+} from "react-icons/hi";
 
 export default function Register() {
     const { data, setData, post, errors } = useForm({
@@ -19,6 +19,10 @@ export default function Register() {
     const submit = (e) => {
         e.preventDefault();
         post(route("pasien.register.submit"));
+    };
+
+    const handleNumberInput = (field, value) => {
+        setData(field, value.replace(/\D/g, "")); // Hanya izinkan angka
     };
 
     return (
@@ -99,7 +103,7 @@ export default function Register() {
                                 placeholder="Masukkan Nomor KTP"
                                 value={data.no_ktp}
                                 onChange={(e) =>
-                                    setData("no_ktp", e.target.value)
+                                    handleNumberInput("no_ktp", e.target.value)
                                 }
                                 className="w-full outline-none text-black placeholder-[#F96E2A]"
                             />
@@ -126,7 +130,7 @@ export default function Register() {
                                 placeholder="Masukkan Nomor HP"
                                 value={data.no_hp}
                                 onChange={(e) =>
-                                    setData("no_hp", e.target.value)
+                                    handleNumberInput("no_hp", e.target.value)
                                 }
                                 className="w-full outline-none text-black placeholder-[#F96E2A]"
                             />
@@ -148,7 +152,6 @@ export default function Register() {
                     </div>
                 </form>
 
-                {/* Optional: Link ke halaman login */}
                 <div className="text-center mt-6">
                     <p className="text-sm text-[#78B3CE]">
                         Pasien Lama ?{" "}

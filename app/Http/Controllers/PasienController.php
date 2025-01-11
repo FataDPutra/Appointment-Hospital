@@ -27,36 +27,36 @@ class PasienController extends Controller
     }
 
     // Menyimpan data pasien baru
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'alamat' => 'required|string|max:255',
-            'no_ktp' => 'required|string|max:20|unique:pasien',
-            'no_hp' => 'required|string|max:15',
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'nama' => 'required|string|max:255',
+        'alamat' => 'required|string|max:255',
+        'no_ktp' => 'required|string|max:20|unique:pasien',
+        'no_hp' => 'required|string|max:15|regex:/^\d+$/', // Hanya angka
+    ], [
+        'nama.required' => 'Nama pasien harus diisi.',
+        'alamat.required' => 'Alamat harus diisi.',
+        'no_hp.required' => 'Nomor HP harus diisi.',
+        'no_ktp.required' => 'Nomor KTP harus diisi.',
+        'no_ktp.unique' => 'Nomor KTP sudah terdaftar.',
+        'no_hp.regex' => 'Nomor HP hanya boleh berisi angka.',
+    ]);
 
-        // Generate No RM
-        $no_rm = $this->generateNoRM();
-               // Cek apakah no_ktp sudah terdaftar
-        if (Pasien::where('no_ktp', $request->no_ktp)->exists()) {
+    // Generate No RM
+    $no_rm = $this->generateNoRM();
 
-            // Jika no_ktp sudah ada, kembalikan error ke halaman register
-            return back()->withErrors([
-                'no_ktp' => 'Nomor KTP sudah terdaftar. Silakan Daftarkan Pasien Lain.'
-            ]);
-        }
+    Pasien::create([
+        'nama' => $request->nama,
+        'alamat' => $request->alamat,
+        'no_ktp' => $request->no_ktp,
+        'no_hp' => $request->no_hp,
+        'no_rm' => $no_rm,
+    ]);
 
-        Pasien::create([
-            'nama' => $request->nama,
-            'alamat' => $request->alamat,
-            'no_ktp' => $request->no_ktp,
-            'no_hp' => $request->no_hp,
-            'no_rm' => $no_rm,
-        ]);
+    return redirect()->route('pasiens.index')->with('success', 'Pasien berhasil ditambahkan.');
+}
 
-        return redirect()->route('pasiens.index');
-    }
 
     // Menampilkan detail pasien berdasarkan id
     public function show($id)
@@ -99,7 +99,7 @@ class PasienController extends Controller
     //     return redirect()->route('pasiens.index');
     // }
 
-    public function update(Request $request, $id)
+public function update(Request $request, $id)
 {
     $pasien = Pasien::findOrFail($id);
 
@@ -108,34 +108,13 @@ class PasienController extends Controller
         'alamat' => 'required|string|max:255',
         'no_ktp' => 'required|string|max:20|unique:pasien,no_ktp,' . $pasien->id,
         'no_hp' => 'required|string|max:15',
+    ], [
+        'nama.required' => 'Nama pasien harus diisi.',
+        'alamat.required' => 'Alamat harus diisi.',
+        'no_hp.required' => 'Nomor HP harus diisi.',
+        'no_ktp.required' => 'Nomor KTP harus diisi.',
+        'no_ktp.unique' => 'Nomor KTP sudah terdaftar untuk pasien lain.',
     ]);
-
-    // Cek apakah ada perubahan data
-    $dataChanged = false;
-    $fieldsToCheck = ['nama', 'alamat', 'no_ktp', 'no_hp'];
-
-    foreach ($fieldsToCheck as $field) {
-        if ($request->input($field) !== $pasien->$field) {
-            $dataChanged = true;
-            break;
-        }
-    }
-
-    // Jika tidak ada perubahan, kembalikan dengan pesan
-    if (!$dataChanged) {
-        return redirect()->route('pasiens.index')->with('info', 'Tidak ada perubahan data.');
-    }
-
-    // Cek duplikasi No KTP untuk pasien lain
-    $existingPasien = Pasien::where('no_ktp', $request->no_ktp)
-        ->where('id', '!=', $pasien->id)
-        ->first();
-
-    if ($existingPasien) {
-        return back()->withErrors([
-            'no_ktp' => 'Nomor KTP sudah terdaftar untuk pasien lain.'
-        ]);
-    }
 
     // Update data pasien
     $pasien->update([
@@ -147,6 +126,7 @@ class PasienController extends Controller
 
     return redirect()->route('pasiens.index')->with('success', 'Data pasien berhasil diperbarui.');
 }
+
 
     // Menghapus data pasien
     public function destroy($id)

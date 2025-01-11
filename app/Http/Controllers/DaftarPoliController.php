@@ -65,6 +65,8 @@ public function create()
         $request->validate([
             'id_jadwal' => 'required|exists:jadwal_periksa,id',
             'keluhan' => 'nullable|string|max:255',
+        ],[
+            'id_jadwal.required' => 'Harus memilih jadwal periksa yang tersedia.',
         ]);
 
         $pasien = session('pasien');

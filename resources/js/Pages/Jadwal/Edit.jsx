@@ -5,7 +5,7 @@ import Select from "react-select";
 import { Inertia } from "@inertiajs/inertia";
 import { TbClockPlus } from "react-icons/tb";
 import { IoIosArrowBack } from "react-icons/io";
-import { FaSave } from "react-icons/fa";
+import Swal from "sweetalert2"; // Import SweetAlert2
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
 
@@ -16,13 +16,42 @@ const JadwalEdit = ({ jadwal }) => {
         jam_selesai: jadwal.jam_selesai,
     });
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        put(`/jadwal/${jadwal.id}`, {
-            onSuccess: () => alert("Jadwal berhasil diperbarui!"),
+        setIsSubmitting(true); // Set to true when submitting
+
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Jadwal akan diubah!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, simpan!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                put(`/jadwal/${jadwal.id}`, {
+                    onError: (err) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal diubah",
+                            text: err.hari || err.jam_mulai || err.jam_selesai,
+                        });
+                    },
+                    onSuccess: () => {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: "Jadwal berhasil diubah!",
+                        });
+                    },
+                    onFinish: () => setIsSubmitting(false), // Reset state after process finishes
+                });
+            }
         });
     };
-
     return (
         <AuthenticatedLayout
             header={
@@ -143,10 +172,19 @@ const JadwalEdit = ({ jadwal }) => {
                                 {/* Save Button */}
                                 <button
                                     type="submit"
-                                    className="bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out"
+                                    disabled={isSubmitting}
+                                    className={`bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out ${
+                                        isSubmitting
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
                                 >
                                     <TbClockPlus className="w-5 h-5" />
-                                    <span className="text-lg">Simpan</span>
+                                    <span className="text-lg">
+                                        {isSubmitting
+                                            ? "Menyimpan..."
+                                            : "Simpan"}
+                                    </span>
                                 </button>
                             </div>
                         </div>

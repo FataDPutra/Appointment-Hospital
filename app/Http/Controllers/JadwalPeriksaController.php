@@ -365,4 +365,21 @@ public function index()
 
         return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil dinonaktifkan.');
     }
+
+    /**
+ * Menghapus jadwal secara permanen.
+ */
+public function forceDelete($id)
+{
+    $jadwal = JadwalPeriksa::withTrashed()
+        ->where('id', $id)
+        ->where('id_dokter', auth()->id())
+        ->firstOrFail();
+
+    // Hapus secara permanen
+    $jadwal->forceDelete();
+
+    return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil dihapus secara permanen.');
+}
+   
 }

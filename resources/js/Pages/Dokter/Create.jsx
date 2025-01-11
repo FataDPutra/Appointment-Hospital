@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useForm } from "@inertiajs/inertia-react";
-import { Inertia } from "@inertiajs/inertia";
+import React, { useState } from "react";
+import { useForm } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
 import Select from "react-select";
+import { Inertia } from "@inertiajs/inertia";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaUserPlus } from "react-icons/fa";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "../../Components/Sidebar";
-import { Head } from "@inertiajs/react";
+import Swal from "sweetalert2"; // Tambahkan SweetAlert
 
 const CreateDokter = ({ poli }) => {
     const { data, setData, post, errors } = useForm({
@@ -23,14 +24,42 @@ const CreateDokter = ({ poli }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        post(route("dokter.store"), {
-            onFinish: () => setIsSubmitting(false),
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Data dokter akan disimpan!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, simpan!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                post(route("dokter.store"), {
+                    onError: (err) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal disimpan",
+                            text:
+                                err.nama ||
+                                err.alamat ||
+                                err.no_hp ||
+                                err.email ||
+                                err.password ||
+                                err.id_poli,
+                        });
+                    },
+                    onSuccess: () => {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: "Data dokter berhasil disimpan!",
+                        });
+                    },
+                    onFinish: () => setIsSubmitting(false), // Reset state after process finishes
+                });
+            }
         });
     };
-
-    useEffect(() => {
-        document.getElementById("nama").focus();
-    }, []);
 
     const poliOptions = poli.map((p) => ({
         value: p.id,
@@ -49,6 +78,7 @@ const CreateDokter = ({ poli }) => {
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">
+                    {/* Pesan Error */}
                     {Object.keys(errors).length > 0 && (
                         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
                             <strong className="font-bold">
@@ -61,6 +91,7 @@ const CreateDokter = ({ poli }) => {
                             </ul>
                         </div>
                     )}
+
                     <form onSubmit={handleSubmit}>
                         <div className="space-y-6">
                             {/* Input Nama */}
@@ -69,7 +100,6 @@ const CreateDokter = ({ poli }) => {
                                     Nama
                                 </label>
                                 <input
-                                    id="nama"
                                     type="text"
                                     value={data.nama}
                                     onChange={(e) =>
@@ -77,7 +107,6 @@ const CreateDokter = ({ poli }) => {
                                     }
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
                                     placeholder="Masukkan nama dokter"
-                                    required
                                 />
                                 {errors.nama && (
                                     <div className="text-red-500 mt-1">
@@ -98,7 +127,6 @@ const CreateDokter = ({ poli }) => {
                                     }
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
                                     placeholder="Masukkan alamat dokter"
-                                    required
                                 />
                                 {errors.alamat && (
                                     <div className="text-red-500 mt-1">
@@ -116,11 +144,13 @@ const CreateDokter = ({ poli }) => {
                                     type="text"
                                     value={data.no_hp}
                                     onChange={(e) =>
-                                        setData("no_hp", e.target.value)
+                                        setData(
+                                            "no_hp",
+                                            e.target.value.replace(/\D/g, "")
+                                        )
                                     }
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
                                     placeholder="Masukkan nomor HP dokter"
-                                    required
                                 />
                                 {errors.no_hp && (
                                     <div className="text-red-500 mt-1">
@@ -141,7 +171,6 @@ const CreateDokter = ({ poli }) => {
                                     }
                                     placeholder="Pilih Poli"
                                     className="w-full border border-[#78B3CE] rounded-md focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
-                                    required
                                 />
                                 {errors.id_poli && (
                                     <div className="text-red-500 mt-1">
@@ -163,7 +192,6 @@ const CreateDokter = ({ poli }) => {
                                     }
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
                                     placeholder="Masukkan email dokter"
-                                    required
                                 />
                                 {errors.email && (
                                     <div className="text-red-500 mt-1">
@@ -185,7 +213,6 @@ const CreateDokter = ({ poli }) => {
                                     }
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
                                     placeholder="Masukkan password dokter"
-                                    required
                                 />
                                 {errors.password && (
                                     <div className="text-red-500 mt-1">
@@ -194,8 +221,8 @@ const CreateDokter = ({ poli }) => {
                                 )}
                             </div>
 
+                            {/* Tombol Aksi */}
                             <div className="mt-6 flex space-x-4">
-                                {/* Tombol Back */}
                                 <button
                                     type="button"
                                     onClick={() =>
@@ -204,10 +231,9 @@ const CreateDokter = ({ poli }) => {
                                     className="bg-gray-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-gray-600 flex items-center space-x-2 transition duration-200 ease-in-out"
                                 >
                                     <IoIosArrowBack className="w-5 h-5" />
-                                    <span className="text-lg">Back</span>
+                                    <span className="text-lg">Kembali</span>
                                 </button>
 
-                                {/* Tombol Simpan */}
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}

@@ -54,6 +54,30 @@ const JadwalIndex = ({ jadwal }) => {
         });
     };
 
+    // Fungsi untuk menghapus jadwal secara permanen
+    const handleDelete = (id) => {
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Jadwal ini akan dihapus secara permanen!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Hapus",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Inertia.delete(`/jadwal/${id}/force-delete`);
+                Swal.fire(
+                    "Dihapus!",
+                    "Jadwal berhasil dihapus secara permanen.",
+                    "success"
+                );
+            }
+        });
+    };
+
     return (
         <AuthenticatedLayout
             header={
@@ -170,6 +194,21 @@ const JadwalIndex = ({ jadwal }) => {
                                                             </span>
                                                         </button>
                                                     )}
+
+                                                    {/* Delete Permanen Button */}
+                                                    <button
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                item.id
+                                                            )
+                                                        }
+                                                        className="bg-red-600 text-white px-4 py-2 rounded-md shadow-md flex items-center space-x-2 transition-all duration-200 hover:bg-red-700"
+                                                    >
+                                                        <FaTrashAlt className="w-4 h-4" />
+                                                        <span className="text-sm">
+                                                            Hapus Permanen
+                                                        </span>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>

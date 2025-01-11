@@ -29,15 +29,18 @@ class PoliController extends Controller
         $request->validate([
             'nama_poli' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
+        ], [
+            'nama_poli.required' => 'Nama poli harus diisi.',
         ]);
 
-        $poli = Poli::create([
+        Poli::create([
             'nama_poli' => $request->nama_poli,
             'keterangan' => $request->keterangan,
         ]);
 
-        return redirect()->route('polis.index');  // Redirect ke daftar poli setelah berhasil menambah
+        return redirect()->route('polis.index')->with('success', 'Poli berhasil ditambahkan.');
     }
+
 
     // Menampilkan detail poli berdasarkan id
     public function show($id)
@@ -63,6 +66,8 @@ class PoliController extends Controller
         $request->validate([
             'nama_poli' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
+        ],[
+            'nama_poli.required' => 'Nama poli harus diisi.',
         ]);
 
         $poli = Poli::findOrFail($id);

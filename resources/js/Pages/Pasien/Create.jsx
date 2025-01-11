@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useForm } from "@inertiajs/inertia-react";
-import { Inertia } from "@inertiajs/inertia";
-import { IoIosArrowBack } from "react-icons/io";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { FaUserPlus } from "react-icons/fa";
-import Sidebar from "../../Components/Sidebar";
+import React, { useState } from "react";
+import { useForm } from "@inertiajs/react";
 import { Head } from "@inertiajs/react";
+import { IoIosArrowBack } from "react-icons/io";
+import { FaUserPlus } from "react-icons/fa";
+import { Inertia } from "@inertiajs/inertia";
+import Swal from "sweetalert2";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import Sidebar from "../../Components/Sidebar";
 
-const PasienCreate = () => {
+const CreatePasien = () => {
     const { data, setData, post, errors } = useForm({
         nama: "",
         alamat: "",
@@ -20,14 +21,41 @@ const PasienCreate = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        post(route("pasiens.store"), {
-            onFinish: () => setIsSubmitting(false), // Reset isSubmitting after the request
+
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Data pasien akan disimpan!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, simpan!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                post(route("pasiens.store"), {
+                    onError: (err) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal disimpan",
+                            text:
+                                err.nama ||
+                                err.no_ktp ||
+                                err.no_hp ||
+                                err.alamat,
+                        });
+                    },
+                    onSuccess: () => {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: "Data pasien berhasil disimpan!",
+                        });
+                    },
+                    onFinish: () => setIsSubmitting(false), // Reset state after process finishes
+                });
+            }
         });
     };
-
-    useEffect(() => {
-        document.getElementById("nama").focus();
-    }, []);
 
     return (
         <AuthenticatedLayout
@@ -41,7 +69,7 @@ const PasienCreate = () => {
             <div className="flex">
                 <Sidebar />
                 <div className="container mx-auto p-6 bg-[#FBF8EF] w-full ml-0 rounded-lg shadow-lg">
-                    {/* Tampilkan pesan kesalahan global jika ada */}
+                    {/* Pesan Error Global */}
                     {Object.keys(errors).length > 0 && (
                         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
                             <strong className="font-bold">
@@ -54,6 +82,7 @@ const PasienCreate = () => {
                             </ul>
                         </div>
                     )}
+
                     <form onSubmit={handleSubmit}>
                         <div className="space-y-6">
                             {/* Input Nama */}
@@ -62,7 +91,6 @@ const PasienCreate = () => {
                                     Nama
                                 </label>
                                 <input
-                                    id="nama"
                                     type="text"
                                     value={data.nama}
                                     onChange={(e) =>
@@ -70,7 +98,6 @@ const PasienCreate = () => {
                                     }
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
                                     placeholder="Masukkan nama pasien"
-                                    required
                                 />
                                 {errors.nama && (
                                     <div className="text-red-500 mt-1">
@@ -109,7 +136,10 @@ const PasienCreate = () => {
                                     type="text"
                                     value={data.no_ktp}
                                     onChange={(e) =>
-                                        setData("no_ktp", e.target.value)
+                                        setData(
+                                            "no_ktp",
+                                            e.target.value.replace(/\D/g, "")
+                                        )
                                     }
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
                                     placeholder="Masukkan nomor KTP pasien"
@@ -130,7 +160,10 @@ const PasienCreate = () => {
                                     type="text"
                                     value={data.no_hp}
                                     onChange={(e) =>
-                                        setData("no_hp", e.target.value)
+                                        setData(
+                                            "no_hp",
+                                            e.target.value.replace(/\D/g, "")
+                                        )
                                     }
                                     className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
                                     placeholder="Masukkan nomor HP pasien"
@@ -141,23 +174,22 @@ const PasienCreate = () => {
                                     </div>
                                 )}
                             </div>
+
+                            {/* Tombol Aksi */}
                             <div className="mt-6 flex space-x-4">
-                                {/* Tombol Back */}
                                 <button
                                     type="button"
                                     onClick={() =>
                                         Inertia.visit(route("pasiens.index"))
-                                    } // Navigate to the list of pasien
+                                    }
                                     className="bg-gray-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-gray-600 flex items-center space-x-2 transition duration-200 ease-in-out"
                                 >
                                     <IoIosArrowBack className="w-5 h-5" />
-                                    <span className="text-lg">Back</span>
+                                    <span className="text-lg">Kembali</span>
                                 </button>
-
-                                {/* Tombol Simpan */}
                                 <button
                                     type="submit"
-                                    disabled={isSubmitting} // Disable button while submitting
+                                    disabled={isSubmitting}
                                     className={`bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out ${
                                         isSubmitting
                                             ? "opacity-50 cursor-not-allowed"
@@ -180,4 +212,4 @@ const PasienCreate = () => {
     );
 };
 
-export default PasienCreate;
+export default CreatePasien;
