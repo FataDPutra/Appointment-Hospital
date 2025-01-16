@@ -57,6 +57,8 @@ const CreateDokter = ({ poli }) => {
                     },
                     onFinish: () => setIsSubmitting(false), // Reset state after process finishes
                 });
+            }else {
+                setIsSubmitting(false); // Reset state jika dibatalkan
             }
         });
     };

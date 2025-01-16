@@ -57,7 +57,7 @@ const PeriksaIndex = ({ daftarPoli }) => {
                                             key={poli.id}
                                             className="hover:bg-[#F3F3F3] transition-all duration-200"
                                         >
-                                            <td className="border p-4">
+                                            <td className="border p-4 text-center">
                                                 {poli.no_antrian}
                                             </td>
                                             <td className="border p-4">

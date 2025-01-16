@@ -1,4 +1,5 @@
 import { useForm } from "@inertiajs/react";
+import React, { useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { Head } from "@inertiajs/react";
 import { FaSuitcaseMedical } from "react-icons/fa6";
@@ -16,10 +17,13 @@ export default function Show({ daftarPoli, obat, pasien }) {
         obat: [],
     });
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    
     const biayaPemeriksaan = 150000;
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
         Swal.fire({
             title: "Konfirmasi Pemeriksaan",
@@ -34,16 +38,26 @@ export default function Show({ daftarPoli, obat, pasien }) {
         }).then((result) => {
             if (result.isConfirmed) {
                 post(`/periksa/${daftarPoli.id}`, {
-                    onSuccess: () =>
-                        Swal.fire(
-                            "Selesai!",
-                            "Pemeriksaan telah berhasil diselesaikan.",
-                            "success"
-                        ),
+                    onError: (err) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal disimpan",
+                            text:"Ada Kesalahan"
+                        });
+                    },
+                    onSuccess: () => {
+                        Swal.fire({
+                             icon: "success",
+                             title: "Berhasil",
+                             text: "Data pasien berhasil disimpan!",
+                        });
+                    },
+                    onFinish: () => setIsSubmitting(false), // Reset state after process finishes
+                    });
+                }else {setIsSubmitting(false); // Reset state jika dibatalkan
+                    }
                 });
-            }
-        });
-    };
+        };
 
     const obatOptions = obat.map((item) => ({
         value: item.id,
@@ -149,14 +163,21 @@ export default function Show({ daftarPoli, obat, pasien }) {
                                 </button>
 
                                 <button
-                                    type="submit"
-                                    className="bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out"
-                                >
-                                    <FaSuitcaseMedical className="w-5 h-5" />
-                                    <span className="text-lg">
-                                        Selesai Pemeriksaan
-                                    </span>
-                                </button>
+                                                                    type="submit"
+                                                                    disabled={isSubmitting}
+                                                                    className={`bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out ${
+                                                                        isSubmitting
+                                                                            ? "opacity-50 cursor-not-allowed"
+                                                                            : ""
+                                                                    }`}
+                                                                >
+                                                                    <FaSuitcaseMedical className="w-5 h-5" />
+                                                                    <span className="text-lg">
+                                                                        {isSubmitting
+                                                                            ? "Menyimpan..."
+                                                                            : "Selesaikan Pemeriksaan"}
+                                                                    </span>
+                                                                </button>
                             </div>
                         </div>
                     </form>

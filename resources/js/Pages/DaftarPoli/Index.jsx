@@ -7,10 +7,14 @@ import { Head } from "@inertiajs/react";
 
 const Index = ({ daftarPoli }) => {
     // Function to format the date
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString(); // Formats as 'MM/DD/YYYY'
-    };
+// Function to format the date
+const formatDate = (dateString) => {
+    if (!dateString) {
+        return "Belum Diperiksa"; // Return default message if no date
+    }
+    const date = new Date(dateString);
+    return date.toLocaleDateString(); // Formats as 'MM/DD/YYYY'
+};
 
     return (
         <AuthenticatedLayoutPasien
@@ -93,7 +97,7 @@ const Index = ({ daftarPoli }) => {
                                                     {formatDate(
                                                         item.periksa
                                                             ?.tgl_periksa
-                                                    )}
+                                                    ) }
                                                 </td>
                                                 <td className="border p-4">
                                                     {item.jadwal?.dokter
