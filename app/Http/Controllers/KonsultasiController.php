@@ -78,13 +78,15 @@ class KonsultasiController extends Controller
         return redirect()->route('konsultasi.index')->with('success', 'Konsultasi berhasil!');
     }
 
-    public function edit($id)
-    {
-        $konsultasi = Konsultasi::findOrFail($id);
-        return Inertia::render('Konsultasi/Edit', [
-            'konsultasi' => $konsultasi,
-        ]);
-    }
+   public function edit($id)
+{
+    $konsultasi = Konsultasi::with('dokter')->findOrFail($id);
+
+    return Inertia::render('Konsultasi/Edit', [
+        'konsultasi' => $konsultasi,
+    ]);
+}
+
 
     public function update(Request $request, $id)
     {

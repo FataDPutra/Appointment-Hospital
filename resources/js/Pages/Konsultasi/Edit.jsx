@@ -1,19 +1,24 @@
 import React, { useState } from "react";
 import { useForm } from "@inertiajs/react";
+import Select from "react-select";
 import { Head } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 import { IoIosArrowBack } from "react-icons/io";
-import { TiMessages } from "react-icons/ti";
-import Swal from "sweetalert2";
+import { FaUserPlus } from "react-icons/fa";
+import Swal from "sweetalert2"; // Import SweetAlert2
 import AuthenticatedLayoutPasien from "@/Layouts/AuthenticatedLayoutPasien";
 import PasienSidebar from "../../Components/PasienSidebar";
+import { TiMessages } from "react-icons/ti";
 
 const Edit = ({ konsultasi }) => {
     const { data, setData, put, processing, errors } = useForm({
         subject: konsultasi.subject,
         pertanyaan: konsultasi.pertanyaan,
+        jawaban: konsultasi.jawaban,
+        tgl_konsultasi: konsultasi.tgl_konsultasi,
+        id_dokter: konsultasi.id_dokter,
+        nama_dokter: konsultasi.dokter?.nama || "", // Assuming dokter data is nested under konsultasi
     });
-
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = (e) => {
@@ -29,12 +34,12 @@ const Edit = ({ konsultasi }) => {
             reverseButtons: true,
         }).then((result) => {
             if (result.isConfirmed) {
-                put(route("konsultasi.update"), {
-                    onError: () => {
+                put(route("konsultasi.update", konsultasi.id), {
+                    onError: (err) => {
                         Swal.fire({
                             icon: "error",
                             title: "Gagal diubah",
-                            text: "Terjadi kesalahan saat mengubah konsultasi.",
+                            text: "Terjadi kesalahan saat diubah.",
                             confirmButtonText: "OK",
                         });
                     },
@@ -46,10 +51,10 @@ const Edit = ({ konsultasi }) => {
                             confirmButtonText: "OK",
                         });
                     },
-                    onFinish: () => setIsSubmitting(false),
+                    onFinish: () => setIsSubmitting(false), // Reset state after process finishes
                 });
             } else {
-                setIsSubmitting(false);
+                setIsSubmitting(false); // Reset state jika dibatalkan
             }
         });
     };
@@ -81,6 +86,19 @@ const Edit = ({ konsultasi }) => {
                     )}
                     <form onSubmit={handleSubmit}>
                         <div className="space-y-6">
+                            {/* Input Dokter (ReadOnly) */}
+                            <div>
+                                <label className="block mb-2 text-[#78B3CE]">
+                                    Dokter
+                                </label>
+                                <input
+                                    type="text"
+                                    value={data.nama_dokter}
+                                    readOnly
+                                    className="w-full border border-[#78B3CE] rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all bg-gray-100 cursor-not-allowed"
+                                />
+                            </div>
+
                             {/* Input Subject */}
                             <div>
                                 <label className="block mb-2 text-[#78B3CE]">
@@ -141,7 +159,7 @@ const Edit = ({ konsultasi }) => {
                                     <span className="text-lg">Kembali</span>
                                 </button>
 
-                                {/* Tombol Simpan */}
+                                {/* Tombol Daftar */}
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
@@ -154,8 +172,8 @@ const Edit = ({ konsultasi }) => {
                                     <TiMessages className="w-5 h-5" />
                                     <span className="text-lg">
                                         {isSubmitting
-                                            ? "Menyimpan..."
-                                            : "Simpan"}
+                                            ? "Konsultasi..."
+                                            : "Konsultasi"}
                                     </span>
                                 </button>
                             </div>
