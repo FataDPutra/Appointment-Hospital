@@ -1,103 +1,58 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "@inertiajs/react";
-import Select from "react-select";
 import { Head } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 import { IoIosArrowBack } from "react-icons/io";
-import { FaUserPlus } from "react-icons/fa";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import { TiMessages } from "react-icons/ti";
+import Swal from "sweetalert2";
 import AuthenticatedLayoutPasien from "@/Layouts/AuthenticatedLayoutPasien";
 import PasienSidebar from "../../Components/PasienSidebar";
-import { TiMessages } from "react-icons/ti";
 
 const Edit = ({ konsultasi }) => {
     const { data, setData, put, processing, errors } = useForm({
         subject: konsultasi.subject,
         pertanyaan: konsultasi.pertanyaan,
-        jawaban: konsultasi.jawaban,
-        tgl_konsultasi: konsultasi.tgl_konsultasi,
-        id_dokter: konsultasi.id_dokter,
     });
+
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    // const [selectedPoli, setSelectedPoli] = useState(null); // Untuk Poli
-    // const [filteredDokter, setFilteredDokter] = useState([]); // Jadwal yang difilter berdasarkan Poli
-    // const [selectedDokter, setSelectedDokter] = useState(null); // Untuk tampilan dropdown Jadwal Dokter
-
-    // // Update filtered jadwal ketika Poli berubah
-    // useEffect(() => {
-    //     if (selectedPoli) {
-    //         const filtered = dokter.filter(
-    //             (item) => item.dokter?.poli?.id === selectedPoli.value
-    //         );
-    //         setFilteredDokter(filtered);
-
-    //         // Reset value dan tampilan dropdown "Dokter" ketika Poli berubah
-    //         if (
-    //             selectedDokter &&
-    //             !filtered.some((item) => item.id === selectedDokter.value)
-    //         ) {
-    //             setData("id_dokter", ""); // Reset value form
-    //             setSelectedDokter(null); // Reset tampilan dropdown
-    //         }
-    //     } else {
-    //         setFilteredDokter([]);
-    //     }
-    // }, [selectedPoli, dokter, selectedDokter, setData]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         Swal.fire({
-                    title:"Apakah Anda yakin?",
-                    text: "Konsultasi akan diubah",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Ya, ubah!",
-                    cancelButtonText: "Batal",
-                    reverseButtons: true,
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        put(route("konsultasi.update"), {
-                            onError: (err) => {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Gagal diubah",
-                                    text:"Terjadi kesalahan saat diubah.",
-                                    confirmButtonText: "OK",
-                                });
-                            },
-                            onSuccess: () => {
-                                Swal.fire({
-                                    icon: "success",
-                                    title: "Berhasil",
-                                    text: "Konsultasi berhasil diubah!",
-                                    confirmButtonText: "OK",
-                                });
-                            },
-                            onFinish: () => setIsSubmitting(false), // Reset state after process finishes
+            title: "Apakah Anda yakin?",
+            text: "Konsultasi akan diubah",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, ubah!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                put(route("konsultasi.update"), {
+                    onError: () => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal diubah",
+                            text: "Terjadi kesalahan saat mengubah konsultasi.",
+                            confirmButtonText: "OK",
                         });
-                    }else {
-                        setIsSubmitting(false); // Reset state jika dibatalkan
-                    }
+                    },
+                    onSuccess: () => {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: "Konsultasi berhasil diubah!",
+                            confirmButtonText: "OK",
+                        });
+                    },
+                    onFinish: () => setIsSubmitting(false),
                 });
-            };
-
-
-    // const poliOptions = poli.map((item) => ({
-    //     value: item.id,
-    //     label: item.nama_poli,
-    // }));
-
-    // const dokterOptions = filteredDokter.map((item) => ({
-    //     value: item.id,
-    //     label: `${item.dokter?.nama || "N/A"}`
-    // }));
-
-    // const dokterOptions = dokter.map((item) => ({
-    //     value: item.id,
-    //     label: item.nama,
-    // }));
+            } else {
+                setIsSubmitting(false);
+            }
+        });
+    };
 
     return (
         <AuthenticatedLayoutPasien
@@ -126,47 +81,7 @@ const Edit = ({ konsultasi }) => {
                     )}
                     <form onSubmit={handleSubmit}>
                         <div className="space-y-6">
-                            {/* Dropdown Poli */}
-                            {/* <div>
-                                <label className="block mb-2 text-[#78B3CE]">
-                                    Poli
-                                </label>
-                                <Select
-                                    options={poliOptions}
-                                    value={poliOptions.find(
-                                        (opt) =>
-                                            opt.value === selectedPoli?.value
-                                    )}
-                                    onChange={(option) =>
-                                        setSelectedPoli(option)
-                                    }
-                                    placeholder="Pilih Poli"
-                                    className="w-full border border-[#78B3CE] rounded-md focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
-                                />
-                            </div> */}
-
-                            {/* Dropdown Jadwal */}
-                            <div>
-                                <label className="block mb-2 text-[#78B3CE]">
-                                    Dokter
-                                </label>
-                                <Select
-                                    options={dokterOptions}
-                                    onChange={(option) =>
-                                        setData("id_dokter", option.value)
-                                    }
-                                    placeholder="Pilih Dokter"
-                                    isDisabled
-                                    className="w-full border border-[#78B3CE] rounded-md focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all"
-                                />
-                                {errors.id_dokter && (
-                                    <div className="text-red-500 mt-1">
-                                        {errors.id_dokter}
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Input Keluhan */}
+                            {/* Input Subject */}
                             <div>
                                 <label className="block mb-2 text-[#78B3CE]">
                                     Subject
@@ -184,7 +99,6 @@ const Edit = ({ konsultasi }) => {
                                             : "border-[#78B3CE]"
                                     } rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-[#F96E2A] transition-all`}
                                     placeholder="Masukkan subject"
-                                    readOnly
                                 />
                                 {errors.subject && (
                                     <div className="text-red-500 mt-1">
@@ -193,7 +107,7 @@ const Edit = ({ konsultasi }) => {
                                 )}
                             </div>
 
-
+                            {/* Input Pertanyaan */}
                             <div>
                                 <label className="block mb-2 text-[#78B3CE]">
                                     Pertanyaan
@@ -214,15 +128,12 @@ const Edit = ({ konsultasi }) => {
                                 )}
                             </div>
 
-
                             <div className="mt-6 flex space-x-4">
                                 {/* Tombol Back */}
                                 <button
                                     type="button"
                                     onClick={() =>
-                                        Inertia.visit(
-                                            route("konsultasi.index")
-                                        )
+                                        Inertia.visit(route("konsultasi.index"))
                                     }
                                     className="bg-gray-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-gray-600 flex items-center space-x-2 transition duration-200 ease-in-out"
                                 >
@@ -230,23 +141,23 @@ const Edit = ({ konsultasi }) => {
                                     <span className="text-lg">Kembali</span>
                                 </button>
 
-                                {/* Tombol Daftar */}
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className={`bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out ${
-                                            isSubmitting
-                                                ? "opacity-50 cursor-not-allowed"
-                                                : ""
-                                        }`}
-                                    >
-                                        <TiMessages className="w-5 h-5" />
-                                        <span className="text-lg">
-                                            {isSubmitting
-                                                ? "Konsultasi..."
-                                                : "Konsultasi"}
-                                        </span>
-                                    </button>
+                                {/* Tombol Simpan */}
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className={`bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out ${
+                                        isSubmitting
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                >
+                                    <TiMessages className="w-5 h-5" />
+                                    <span className="text-lg">
+                                        {isSubmitting
+                                            ? "Menyimpan..."
+                                            : "Simpan"}
+                                    </span>
+                                </button>
                             </div>
                         </div>
                     </form>

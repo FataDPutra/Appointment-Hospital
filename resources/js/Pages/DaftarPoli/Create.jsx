@@ -45,40 +45,39 @@ const Create = ({ poli, jadwal }) => {
         e.preventDefault();
         setIsSubmitting(true);
         Swal.fire({
-                    title: "Apakah Anda yakin?",
-                    text: "Pendaftaran akan dilakukan",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Ya, daftar!",
-                    cancelButtonText: "Batal",
-                    reverseButtons: true,
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        post(route("daftar-poli.store"), {
-                            onError: (err) => {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Gagal mendaftar",
-                                    text:"Terjadi kesalahan saat pendaftaran.",
-                                    confirmButtonText: "OK",
-                                });
-                            },
-                            onSuccess: () => {
-                                Swal.fire({
-                                    icon: "success",
-                                    title: "Berhasil",
-                                    text: "Pendaftaran berhasil dilakukan!",
-                                    confirmButtonText: "OK",
-                                });
-                            },
-                            onFinish: () => setIsSubmitting(false), // Reset state after process finishes
+            title: "Apakah Anda yakin?",
+            text: "Pendaftaran akan dilakukan",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, daftar!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                post(route("daftar-poli.store"), {
+                    onError: (err) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal mendaftar",
+                            text: "Terjadi kesalahan saat pendaftaran.",
+                            confirmButtonText: "OK",
                         });
-                    }else {
-                        setIsSubmitting(false); // Reset state jika dibatalkan
-                    }
+                    },
+                    onSuccess: () => {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: "Pendaftaran berhasil dilakukan!",
+                            confirmButtonText: "OK",
+                        });
+                    },
+                    onFinish: () => setIsSubmitting(false), // Reset state after process finishes
                 });
-            };
-    
+            } else {
+                setIsSubmitting(false); // Reset state jika dibatalkan
+            }
+        });
+    };
 
     const poliOptions = poli.map((item) => ({
         value: item.id,
@@ -201,22 +200,22 @@ const Create = ({ poli, jadwal }) => {
                                 </button>
 
                                 {/* Tombol Daftar */}
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className={`bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out ${
-                                            isSubmitting
-                                                ? "opacity-50 cursor-not-allowed"
-                                                : ""
-                                        }`}
-                                    >
-                                        <FaUserPlus className="w-5 h-5" />
-                                        <span className="text-lg">
-                                            {isSubmitting
-                                                ? "Mendaftar..."
-                                                : "Daftar"}
-                                        </span>
-                                    </button>
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className={`bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out ${
+                                        isSubmitting
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                >
+                                    <FaUserPlus className="w-5 h-5" />
+                                    <span className="text-lg">
+                                        {isSubmitting
+                                            ? "Mendaftar..."
+                                            : "Daftar"}
+                                    </span>
+                                </button>
                             </div>
                         </div>
                     </form>
