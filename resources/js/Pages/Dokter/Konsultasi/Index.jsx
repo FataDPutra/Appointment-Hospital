@@ -2,31 +2,14 @@ import React from "react";
 import { Inertia } from "@inertiajs/inertia";
 import Swal from "sweetalert2";
 import { InertiaLink } from "@inertiajs/inertia-react";
-import AuthenticatedLayoutDokter from "@/Layouts/AuthenticatedLayoutDokter"; // Layout khusus untuk dokter
-import DokterSidebar from "../../Components/DokterSidebar"; // Sidebar khusus dokter
+import AuthenticatedLayout from "../../../Layouts/AuthenticatedLayout"; // Layout khusus untuk dokter
+import Sidebar from "../../../Components/Sidebar"; // Sidebar khusus dokter
 import { FaNotesMedical } from "react-icons/fa";
 import { Head } from "@inertiajs/react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
 const Index = ({ konsultasi }) => {
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: "Apakah Anda yakin?",
-            text: "Konsultasi ini akan dihapus!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Hapus",
-            cancelButtonText: "Batal",
-            reverseButtons: true,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Inertia.delete(route("dokter.konsultasi.destroy", id));
-                Swal.fire("Terhapus!", "Konsultasi telah dihapus.", "success");
-            }
-        });
-    };
+
 
     // Fungsi untuk memformat tanggal
     const formatDate = (dateString) => {
@@ -38,7 +21,7 @@ const Index = ({ konsultasi }) => {
     };
 
     return (
-        <AuthenticatedLayoutDokter
+        <AuthenticatedLayout
             header={
                 <h2 className="text-2xl font-semibold leading-tight text-gray-800">
                     Konsultasi Pasien
@@ -48,20 +31,8 @@ const Index = ({ konsultasi }) => {
             <Head title="Konsultasi Pasien" />
 
             <div className="flex">
-                <DokterSidebar />
+                <Sidebar />
                 <div className="container mx-auto p-6 ml-0 bg-[#FBF8EF] rounded-lg shadow-lg w-full">
-                    <div className="flex justify-between items-center mb-6">
-                        <InertiaLink
-                            href={route("dokter.konsultasi.create")}
-                            className="bg-[#F96E2A] text-white px-5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition-transform transform hover:scale-105 hover:bg-[#F96E2A]/90 duration-200 ease-in-out"
-                        >
-                            <FaNotesMedical className="w-5 h-5" />
-                            <span>Tambah Konsultasi</span>
-                        </InertiaLink>
-                    </div>
-                    <div className="text-center text-gray-500 py-4">
-                        Riwayat Konsultasi
-                    </div>
                     {konsultasi.data.length === 0 ? (
                         <div className="text-center text-gray-500 py-4">
                             Tidak ada data riwayat konsultasi.
@@ -130,19 +101,19 @@ const Index = ({ konsultasi }) => {
                                                     {/* Edit Button */}
                                                     <InertiaLink
                                                         href={route(
-                                                            "dokter.konsultasi.edit",
+                                                            "konsultasi-pasien.edit",
                                                             item.id
                                                         )}
                                                         className="bg-yellow-500 text-white px-4 py-2 rounded-md shadow-md flex items-center space-x-2 transition-all duration-200 hover:bg-yellow-600"
                                                     >
                                                         <FaEdit className="w-4 h-4" />
                                                         <span className="text-sm">
-                                                            Edit
+                                                            Tanggapi
                                                         </span>
                                                     </InertiaLink>
 
                                                     {/* Delete Button */}
-                                                    <button
+                                                    {/* <button
                                                         onClick={() =>
                                                             handleDelete(
                                                                 item.id
@@ -154,7 +125,7 @@ const Index = ({ konsultasi }) => {
                                                         <span className="text-sm">
                                                             Hapus
                                                         </span>
-                                                    </button>
+                                                    </button> */}
                                                 </div>
                                             </tr>
                                         ))}
@@ -181,7 +152,7 @@ const Index = ({ konsultasi }) => {
                     )}
                 </div>
             </div>
-        </AuthenticatedLayoutDokter>
+        </AuthenticatedLayout>
     );
 };
 

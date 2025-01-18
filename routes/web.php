@@ -13,6 +13,7 @@ use App\Http\Controllers\AuthPasienController;
 use App\Http\Controllers\DataDokterController;
 use App\Http\Controllers\JadwalPeriksaController;
 use App\Http\Controllers\DaftarPoliController;
+use App\Http\Controllers\DokterKonsultasiController;
 use App\Http\Controllers\KonsultasiController;
 use App\Http\Controllers\PeriksaController;
 use App\Http\Controllers\RiwayatPasienController;
@@ -80,6 +81,10 @@ Route::middleware(['auth', CheckRole::class . ':dokter'])->group(function () {
 
     Route::get('/riwayat-pasien', [RiwayatPasienController::class, 'index'])->name('riwayat-pasien.index');
     Route::get('/riwayat-pasien/{id}', [RiwayatPasienController::class, 'show'])->name('riwayat-pasien.show');
+
+    // Route::get('/konsultasi-pasien', [DokterKonsultasiController::class, 'index'])->name('konsultasi.index');
+    Route::resource('konsultasi-pasien', DokterKonsultasiController::class);
+
 
 
     // Route::get('/konsultasi', [KonsultasiController::class, 'index'])->name('konsultasi.index');

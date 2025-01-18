@@ -72,7 +72,7 @@ export default function Sidebar() {
         },
         {
             label: "Konsultasi",
-            route: "/konsultasi",
+            route: "/konsultasi-pasien",
             icon: <TiMessages className="w-6 h-6" />,
         },
     ];
