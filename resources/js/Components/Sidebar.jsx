@@ -8,6 +8,7 @@ import { FaPeopleGroup, FaUserDoctor } from "react-icons/fa6";
 import { PiClockUserBold } from "react-icons/pi";
 import { TbCheckupList } from "react-icons/tb";
 import { FaBookMedical } from "react-icons/fa";
+import { TiMessages } from "react-icons/ti";
 
 export default function Sidebar() {
     const { url, props } = usePage(); // Mendapatkan URL saat ini dan props untuk akses user data
@@ -44,6 +45,7 @@ export default function Sidebar() {
             route: "/obats",
             icon: <GiPill className="w-6 h-6" />,
         },
+
     ];
 
     // Menu untuk Dokter
@@ -67,6 +69,11 @@ export default function Sidebar() {
             label: "Riwayat Pasien",
             route: "/riwayat-pasien",
             icon: <FaBookMedical className="w-6 h-6" />,
+        },
+        {
+            label: "Konsultasi",
+            route: "/konsultasi",
+            icon: <TiMessages className="w-6 h-6" />,
         },
     ];
 

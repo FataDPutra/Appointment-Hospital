@@ -3,6 +3,8 @@ import { Link, usePage } from "@inertiajs/react";
 import { IoIosHome } from "react-icons/io";
 import { MdOutlineSick } from "react-icons/md";
 import { RiHospitalFill } from "react-icons/ri";
+import { LuMessageSquareDot } from "react-icons/lu";
+
 
 export default function Sidebar() {
     const { url } = usePage(); // Mendapatkan URL saat ini dan props untuk akses user data
@@ -21,6 +23,11 @@ export default function Sidebar() {
             label: "Daftar Poli",
             route: "/pasien/daftar-poli",
             icon: <RiHospitalFill className="w-6 h-6" />,
+        },
+        {
+            label: "Konsultasi",
+            route: "/pasien/konsultasi",
+            icon: <LuMessageSquareDot className="w-6 h-6" />,
         },
     ];
 

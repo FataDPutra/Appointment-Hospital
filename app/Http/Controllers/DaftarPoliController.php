@@ -33,7 +33,7 @@ class DaftarPoliController extends Controller
         ]);
     }
 
-    
+
 
     // public function create()
     // {
@@ -45,27 +45,23 @@ class DaftarPoliController extends Controller
     //     ]);
     // }
 
-public function create()
-{
-    $jadwal = JadwalPeriksa::with(['dokter.poli'])->get();
-    $poli = Poli::all();
+    public function create()
+    {
+        $jadwal = JadwalPeriksa::with(['dokter.poli'])->get();
+        $poli = Poli::all();
 
-    return Inertia::render('DaftarPoli/Create', [
-        'jadwal' => $jadwal,
-        'poli' => $poli,
-    ]);
-}
-
-
-
-
+        return Inertia::render('DaftarPoli/Create', [
+            'jadwal' => $jadwal,
+            'poli' => $poli,
+        ]);
+    }
 
     public function store(Request $request)
     {
         $request->validate([
             'id_jadwal' => 'required|exists:jadwal_periksa,id',
             'keluhan' => 'nullable|string|max:255',
-        ],[
+        ], [
             'id_jadwal.required' => 'Harus memilih jadwal periksa yang tersedia.',
         ]);
 
@@ -87,33 +83,30 @@ public function create()
         return redirect()->route('daftar-poli.index')->with('success', 'Pendaftaran berhasil!');
     }
 
-public function riwayat($id)
-{
-    $pasien = session('pasien');
-    if (!$pasien) {
-        return redirect()->route('pasien.login');
-    }
-
-    // Ambil data pendaftaran poli dengan relasi periksa dan detailPeriksa dengan obat
-    $riwayat = DaftarPoli::with([
-        'jadwal.dokter.poli',
-        'periksa' => function ($query) {
-            $query->with(['detailPeriksa.obat']); // Eager load detailPeriksa dan obat
+    public function riwayat($id)
+    {
+        $pasien = session('pasien');
+        if (!$pasien) {
+            return redirect()->route('pasien.login');
         }
-    ])
-    ->where('id', $id)
-    ->where('id_pasien', $pasien['id'])
-    ->withTrashed() // Menampilkan data yang di-soft delete
-    ->firstOrFail();  // Gunakan firstOrFail untuk memastikan ada data yang ditemukan
 
-    // Debugging: pastikan data periksa dan detailPeriksa terload
-    // dd($riwayat->periksa->detailPeriksa); // Uncomment untuk cek data
+        // Ambil data pendaftaran poli dengan relasi periksa dan detailPeriksa dengan obat
+        $riwayat = DaftarPoli::with([
+            'jadwal.dokter.poli',
+            'periksa' => function ($query) {
+                $query->with(['detailPeriksa.obat']); // Eager load detailPeriksa dan obat
+            }
+        ])
+            ->where('id', $id)
+            ->where('id_pasien', $pasien['id'])
+            ->withTrashed() // Menampilkan data yang di-soft delete
+            ->firstOrFail();  // Gunakan firstOrFail untuk memastikan ada data yang ditemukan
 
-    return Inertia::render('DaftarPoli/Riwayat', [
-        'riwayat' => $riwayat,
-    ]);
-}
+        // Debugging: pastikan data periksa dan detailPeriksa terload
+        // dd($riwayat->periksa->detailPeriksa); // Uncomment untuk cek data
 
-
-
+        return Inertia::render('DaftarPoli/Riwayat', [
+            'riwayat' => $riwayat,
+        ]);
+    }
 }

@@ -13,6 +13,7 @@ use App\Http\Controllers\AuthPasienController;
 use App\Http\Controllers\DataDokterController;
 use App\Http\Controllers\JadwalPeriksaController;
 use App\Http\Controllers\DaftarPoliController;
+use App\Http\Controllers\KonsultasiController;
 use App\Http\Controllers\PeriksaController;
 use App\Http\Controllers\RiwayatPasienController;
 use App\Http\Middleware\CheckRole;
@@ -39,7 +40,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Route untuk Admin
-Route::middleware(['auth', CheckRole::class.':admin'])->group(function () {
+Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::resource('polis', PoliController::class);  // Menggunakan resource route untuk CRUD poli
     Route::resource('obats', ObatController::class);
@@ -49,7 +50,7 @@ Route::middleware(['auth', CheckRole::class.':admin'])->group(function () {
 
 
 // Route untuk Dokter
-Route::middleware(['auth', CheckRole::class.':dokter'])->group(function () {
+Route::middleware(['auth', CheckRole::class . ':dokter'])->group(function () {
     Route::get('/dashboard', [DokterController::class, 'index'])->name('dokter.dashboard');
 
     // Menampilkan daftar jadwal periksa
@@ -81,6 +82,11 @@ Route::middleware(['auth', CheckRole::class.':dokter'])->group(function () {
     Route::get('/riwayat-pasien/{id}', [RiwayatPasienController::class, 'show'])->name('riwayat-pasien.show');
 
 
+    // Route::get('/konsultasi', [KonsultasiController::class, 'index'])->name('konsultasi.index');
+    // Route::get('/konsultasi/{daftarPoli}', [KonsultasiController::class, 'show'])->name('konsultasi.show');
+    // Route::post('/konsultasi/{daftarPoli}', [KonsultasiController::class, 'store'])->name('konsultasi.store');
+    // Route::get('/konsultasi/{konsultasi}/edit', [KonsultasiController::class, 'edit'])->name('konsultasi.edit');
+    // Route::put('/konsultasi/{konsultasi}', [KonsultasiController::class, 'update'])->name('konsultasi.update');
 });
 
 
@@ -98,7 +104,13 @@ Route::prefix('pasien')->group(function () {
     Route::get('daftar-poli', [DaftarPoliController::class, 'index'])->name('daftar-poli.index');
     Route::get('daftar-poli/create', [DaftarPoliController::class, 'create'])->name('daftar-poli.create');
     Route::get('riwayat/{id}', [DaftarPoliController::class, 'riwayat'])->name('daftar-poli.riwayat');
+
+    // Route::get('konsultasi', [KonsultasiController::class, 'index'])->name('konsultasi.index');
+    // Route::get('konsultasi/create', [KonsultasiController::class, 'create'])->name('konsultasi.create');
+    // Route::post('konsultasi', [KonsultasiController::class, 'store'])->name('konsultasi.store');
+    // Route::get('konsultasi/{id}/edit', [JadwalPeriksaController::class, 'edit'])->name('jadwal.edit');
+    Route::resource('konsultasi', KonsultasiController::class);
 });
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
